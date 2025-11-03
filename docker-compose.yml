@@ -1,0 +1,70 @@
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: chatbot-layon-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=localhost
+      - WEBHOOK_URL=http://localhost:5678
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+      - N8N_LOG_LEVEL=debug
+      - N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true
+      - N8N_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMjEyMjMyMi1lNGU1LTQyMzItOWI5Mi1lMDQxMWEzYmFiMmMiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYwODg3MjIwLCJleHAiOjE3NjM0MzQ4MDB9.3RBTfRL7QMXSRwpqqPz8lpVCoKuqUHw4Z_y3sN78aac
+      - N8N_PUBLIC_API_DISABLED=false
+      - N8N_PUBLIC_API_ENDPOINT=api
+    volumes:
+      - chatbot_layon_n8n_data:/home/node/.n8n
+    networks:
+      - lanchonete-network
+
+  n8n-mcp:
+    image: ghcr.io/czlonkowski/n8n-mcp:latest
+    container_name: chatbot-layon-n8n-mcp
+    restart: unless-stopped
+    environment:
+      - MCP_MODE=sse
+      - N8N_API_URL=http://chatbot-layon-n8n:5678
+      - N8N_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMjEyMjMyMi1lNGU1LTQyMzItOWI5Mi1lMDQxMWEzYmFiMmMiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYwODg3MjIwLCJleHAiOjE3NjM0MzQ4MDB9.3RBTfRL7QMXSRwpqqPz8lpVCoKuqUHw4Z_y3sN78aac
+      - LOG_LEVEL=info
+    ports:
+      - "3001:3001"
+    networks:
+      - lanchonete-network
+    depends_on:
+      - n8n
+
+  postgres:
+    image: postgres:15
+    container_name: chatbot-layon-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=n8n
+      - POSTGRES_USER=n8n
+      - POSTGRES_PASSWORD=n8n123
+    ports:
+      - "5432:5432"
+    volumes:
+      - chatbot_layon_postgres_data:/var/lib/postgresql/data
+    networks:
+      - lanchonete-network
+
+  redis:
+    image: redis:7
+    container_name: chatbot-layon-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - chatbot_layon_redis_data:/data
+    networks:
+      - lanchonete-network
+volumes:
+  chatbot_layon_n8n_data:
+  chatbot_layon_postgres_data:
+  chatbot_layon_redis_data:
+
+networks:
+  lanchonete-network:
+    driver: bridge

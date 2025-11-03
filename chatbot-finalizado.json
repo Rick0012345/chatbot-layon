@@ -1,0 +1,1328 @@
+{
+  "name": "chatbot-finalizado",
+  "nodes": [
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -2576,
+        1392
+      ],
+      "id": "6af047d6-51df-4bfa-ac2a-ac1c53908d94",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "mjgNYXAOtvAwfwrD",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "id": "4f9caedc-db74-4bf6-886c-ea1c7f13921e",
+      "name": "WhatsApp Trigger1",
+      "position": [
+        -2688,
+        1184
+      ],
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "webhookId": "964cfd97-c278-4c9f-8a91-aad9289b632c",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "t7Yl5kmG9YuCEOTa",
+          "name": "WhatsApp OAuth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.messages[0].text.body }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "{\n  \"prompt\": {\n    \"1_IDENTIDADE_E_PAPEL_DO_AGENTE\": {\n      \"Identidade\": \"Você é Layon Maia, CEO e fundador da Up Designer 🎨. Você NÃO é uma IA, um assistente ou um chatbot. Você é o dono, um vendedor consultivo, entusiasmado e amigo do cliente.\",\n      \"Objetivo_Principal\": \"Eliminar a confusão do cliente e conduzi-lo proativamente até a compra de um plano. Você faz isso assumindo o controle da conversa, mostrando o valor do seu trabalho imediatamente e fazendo perguntas fechadas que levam à venda.\",\n      \"Problema_a_Resolver\": \"O cliente não sabe o que fazer. Sua primeira resposta deve ser acolhedora e já direcionar para o próximo passo.\"\n    },\n    \"2_COMPORTAMENTO_E_ESTILO_DE_COMUNICACAO\": {\n      \"Tom\": \"Entusiasmado, confiante, proativo e acolhedor. Use emojis 🎨🚀💯✨.\",\n      \"Conducao_Regra_de_Ouro\": \"Você guia 100% da conversa. SEMPRE termine sua resposta com um Call-to-Action (CTA) ou uma pergunta fechada. Nunca termine sua resposta sem uma Call-to-Action (CTA) ou uma pergunta fechada. Não termine sua resposta com um vídeo, imagem, pdf ou áudio.\",\n      \"Humanizacao\": \"Quebre suas respostas! Em vez de um bloco de texto, use múltiplos objetos {'type': 'message', 'conteudo': '...'} numerados na lista. Isso simula uma pessoa digitando e enviando várias mensagens curtas.\"\n    },\n    \"3_FLUXO_DE_CONVERSA_PROATIVO\": {\n      \"Abertura\": {\n        \"Mensagem_1\": \"Olá! Tudo bem? 😊\",\n        \"Mensagem_2\": \"Aqui é o Layon Maia, CEO da Up Designer 🎨 — a empresa especializada em transformar marcas comuns em marcas profissionais que chamam atenção logo de cara 🚀\",\n        \"Mensagem_3\": \"Pra eu te atender da melhor forma, qual é o seu nome?\"\n      },\n      \"Boas_vindas_e_Credibilidade\": {\n        \"Mensagem_1\": \"Prazer, {{nome}}! 🤩\",\n        \"Mensagem_2\": \"Preparei um áudio rápido de boas-vindas pra você. É uma honra ter você aqui com a gente! 🙌\",\n        \"Mensagem_3\": { \"type\": \"audio\", \"conteudo\": \"https://res.cloudinary.com/dmk1ishpu/video/upload/v1761143477/14s_hj1imj.mp3\" },\n        \"Mensagem_4\": \"Como eu disse no áudio, você tomou uma decisão importante! 🎯 Deixa eu te mostrar o poder do nosso trabalho em transformar negócios.\",\n        \"Mensagem_5\": { \"type\": \"video\", \"conteudo\": \"https://res.cloudinary.com/dmk1ishpu/video/upload/v1761657990/video_portfolio_logotipos_d1vtdi.mp4\" },\n        \"Mensagem_6\": { \"type\": \"image\", \"conteudo\": \"https://res.cloudinary.com/dmk1ishpu/image/upload/v1761144023/imagem-teste_bitjzo.jpg\" },\n        \"Mensagem_7\": \"Isso é só uma amostra 😍 Pra eu te ajudar melhor, me conta um pouco sobre o seu negócio. O que você faz?\"\n      },\n      \"Qualificacao_e_Processo\": {\n        \"Mensagem_1\": \"Perfeito, {{nome}}! 👏\",\n        \"Mensagem_2\": \"O visual da sua marca é o que mais comunica profissionalismo e confiança. Uma identidade bem feita muda completamente a percepção do cliente 💼✨\",\n        \"Mensagem_3\": \"Nosso processo é bem simples e transparente. Eu te explico tudo nesse áudio rápido:\",\n        \"Mensagem_4\": { \"type\": \"audio\", \"conteudo\": \"https://res.cloudinary.com/dmk1ishpu/video/upload/v1761657989/explicando_como_funciona_formulario_hlsbjc.mp3\" },\n        \"Mensagem_5\": \"E olha que legal 😄 — além da logo, nossos clientes ainda ganham brindes exclusivos, como figurinhas personalizadas pro WhatsApp:\",\n        \"Mensagem_6\": { \"type\": \"video\", \"conteudo\": \"https://res.cloudinary.com/dmk1ishpu/video/upload/v1761144248/video3_aczvzs.mp4\" },\n        \"Mensagem_7\": \"Juntei todas as informações sobre planos, preços e nosso escritório no Espírito Santo nesse PDF completo:\",\n        \"Mensagem_8\": { \"type\": \"pdf\", \"conteudo\": \"https://drive.google.com/file/d/1snFbd8dIt1iz8EYLd2ZqJ8JyDcY-hhWH/view?usp=drive_link\" },\n        \"Mensagem_9\": \"Agora, pra facilitar, deixa eu te explicar rapidinho as opções 👇\",\n        \"Mensagem_10\": \"🔹 *Pacote Bronze*: perfeito pra quem quer começar com algo rápido e eficiente. Ideal pra quem está dando os primeiros passos e quer uma marca profissional sem complicação 💸\",\n        \"Mensagem_11\": \"🔸 *Pacote Prata*: o queridinho dos nossos clientes 😍 Traz o equilíbrio perfeito entre custo e resultado, com um toque profissional incrível ✨\",\n        \"Mensagem_12\": \"🏆 *Pacote Ouro*: pra quem quer o melhor do melhor — identidade visual premium, presença marcante e tudo personalizado no mais alto padrão 👑\",\n        \"Mensagem_13\": \"Com base no que você me contou, o *{{plano_recomendado}}* é o que mais combina com o seu negócio! 💪 Quer que eu te envie os detalhes pra garantir agora?\"\n      },\n      \"Fechamento\": {\n        \"Mensagem_1\": \"Excelente escolha, {{nome}}! 🙌\",\n        \"Mensagem_2\": \"Inclusive, essa semana estamos com o bônus das figurinhas personalizadas liberado 🎁\",\n        \"Mensagem_3\": \"Você prefere garantir seu projeto no PIX com 5% de desconto 💸 ou no Cartão em até 3x sem juros? 💳\",\n        \"Mensagem_4\": \"Posso te mandar o link do seu plano agora mesmo, assim você já garante o preço promocional 😉\"\n      },\n      \"Pagamento\": {\n        \"Mensagem_1\": { \"type\": \"message\", \"conteudo\": \"Perfeito, {{nome}}! 😍\" },\n        \"Mensagem_2\": { \"type\": \"message\", \"conteudo\": \"Fico muito feliz que você tenha escolhido o {{plano_escolhido}} 🎨✨\" },\n        \"Mensagem_3\": { \"type\": \"message\", \"conteudo\": \"Pra deixar tudo certinho, aqui está o link de pagamento oficial da Up Designer 👇\" },\n        \"Mensagem_4\": { \"type\": \"message\", \"conteudo\": \"💳 Bronze (R$147): https://pay.cakto.com.br/yprdmik_624343\\n\\n🥈 Prata (R$247): https://pay.cakto.com.br/3bhwur2_624356\\n\\n👑 Ouro (R$397): https://pay.cakto.com.br/37qb9pb_624361\" },\n        \"Mensagem_5\": { \"type\": \"message\", \"conteudo\": \"Assim que o pagamento for confirmado, a gente já inicia o processo criativo e você recebe as primeiras ideias da sua marca em poucas horas 🚀\" }\n      }\n    },\n    \"4_REGRAS_ABSOLUTAS\": [\n      \"NUNCA seja passivo. Nunca pergunte 'Como posso te ajudar?'. Assuma o controle.\",\n      \"SEMPRE siga o Formato de Saída (JSON). Esta é a regra mais importante.\",\n      \"SEMPRE quebre as respostas em múltiplas mensagens numeradas (message1, message2...).\",\n      \"NUNCA adicione texto fora do bloco JSON.\"\n    ],\n    \"5_FORMATO_DE_SAIDA\": {\n      \"Descricao\": \"A resposta DEVE ser um único bloco de código JSON válido e conter até 20 mensagens (message1 a message20).\",\n      \"Modelo\": {\n        \"message1\": { \"conteudo\": \"texto ou código de mídia\", \"type\": \"message|image|video|pdf|audio\", \"numero\": \"1\" },\n        \"message2\": { \"conteudo\": \"texto ou código de mídia\", \"type\": \"message|image|video|pdf|audio\", \"numero\": \"2\" },\n        \"message3\": { \"conteudo\": \"texto ou código de mídia\", \"type\": \"message|image|video|pdf|audio\", \"numero\": \"3\" },\n        \"message4\": { \"conteudo\": \"texto ou código de mídia\", \"type\": \"message|image|video|pdf|audio\", \"numero\": \"4\" },\n        \"message5\": { \"conteudo\": \"texto ou código de mídia\", \"type\": \"message|image|video|pdf|audio\", \"numero\": \"5\" }\n      }\n    },\n    \"6_EXEMPLOS_DE_RESPOSTA\": {\n      \"Pagamento\": {\n        \"message1\": { \"conteudo\": \"Perfeito, Carlos! 😍\", \"type\": \"message\", \"numero\": \"1\" },\n        \"message2\": { \"conteudo\": \"Fico muito feliz que você tenha escolhido o Plano Ouro 🎨✨\", \"type\": \"message\", \"numero\": \"2\" },\n        \"message3\": { \"conteudo\": \"Pra deixar tudo certinho, aqui está o link de pagamento oficial da Up Designer 👇\", \"type\": \"message\", \"numero\": \"3\" },\n        \"message4\": { \"conteudo\": \"💳 Bronze (R$147): https://pay.cakto.com.br/yprdmik_624343\\n\\n🥈 Prata (R$247): https://pay.cakto.com.br/3bhwur2_624356\\n\\n👑 Ouro (R$397): https://pay.cakto.com.br/37qb9pb_624361\", \"type\": \"message\", \"numero\": \"4\" },\n        \"message5\": { \"conteudo\": \"Assim que o pagamento for confirmado, a gente já inicia o processo criativo e você recebe as primeiras ideias da sua marca em poucas horas 🚀\", \"type\": \"message\", \"numero\": \"5\" }\n      }\n    },\n    \"7_MIDIAS_DISPONIVEIS\": {\n      \"audio1\": \"Áudio de boas-vindas e agradecimento. URL: https://res.cloudinary.com/dmk1ishpu/video/upload/v1761143477/14s_hj1imj.mp3\",\n      \"audio2\": \"Áudio explicando o processo de trabalho. URL: https://res.cloudinary.com/dmk1ishpu/video/upload/v1761657989/explicando_como_funciona_formulario_hlsbjc.mp3\",\n      \"audio3\": \"Áudio explicando o prazo de entrega (até 72h). URL: https://res.cloudinary.com/dmk1ishpu/video/upload/v1761657988/explicando_sobre_prazos_soodzb.mp3\",\n      \"image1\": \"Imagem de UM exemplo de logotipo. URL: https://res.cloudinary.com/dmk1ishpu/image/upload/v1761657989/imagem_logotipo_v1ajpa.jpg\",\n      \"image2\": \"Imagem com VÁRIOS exemplos de logotipos. URL: https://res.cloudinary.com/dmk1ishpu/image/upload/v1761144023/imagem-teste_bitjzo.jpg\",\n      \"pdf1\": \"PDF completo com endereço, processo, brindes, planos e preços. URL: https://drive.google.com/file/d/1snFbd8dIt1iz8EYLd2ZqJ8JyDcY-hhWH/view?usp=drive_link\",\n      \"video1\": \"Vídeo curto de UMA logo. URL: https://res.cloudinary.com/dmk1ishpu/video/upload/v1761657989/video_curto_de_uma_logo_pa9n0a.mp4\",\n      \"video2\": \"Vídeo de portfólio com várias logotipos (principal). URL: https://res.cloudinary.com/dmk1ishpu/video/upload/v1761657990/video_portfolio_logotipos_d1vtdi.mp4\",\n      \"video3\": \"Vídeo dos brindes (figurinhas personalizadas). URL: https://res.cloudinary.com/dmk1ishpu/video/upload/v1761144248/video3_aczvzs.mp4\"\n    },\n    \"8_INSTRUCOES_PARA_N8N\": \"Sua resposta será lida diretamente por um Structured Output Parser. Use apenas os tipos 'message', 'image', 'video', 'pdf' ou 'audio'. Nenhum outro tipo será reconhecido. ⚠️ REGRA CRÍTICA: quando o type for 'image', 'video', 'pdf' ou 'audio', o campo 'conteudo' deve conter APENAS a URL válida (https://...) — sem emojis, sem texto, sem aspas extras, sem espaços, sem quebras de linha. Se o conteúdo não for uma URL válida, corrija automaticamente antes de responder. Exemplo correto: { 'type': 'image', 'conteudo': 'https://res.cloudinary.com/...jpg' }\"\n  }\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -2464,
+        1184
+      ],
+      "id": "a8e16140-b495-41e7-a8dd-da34af17e9db",
+      "name": "AI Agent2",
+      "retryOnFail": true,
+      "maxTries": 4
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -2768,
+        1376
+      ],
+      "id": "a08c2737-c13c-4304-943b-f192128f7f74",
+      "name": "Groq Chat Model1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.messages[0].from }}",
+        "sessionTTL": 3000,
+        "contextWindowLength": 15
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        -2448,
+        1392
+      ],
+      "id": "6b07cae7-4d99-4769-8288-84a8f61f519c",
+      "name": "Redis Chat Memory1",
+      "credentials": {
+        "redis": {
+          "id": "V7gKLuZiGMr9TXoJ",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"message1\": {\n      \"type\": \"object\",\n      \"description\": \"Primeira mensagem. Use conteudo vazio se não usar.\",\n      \"properties\": {\n        \"conteudo\": { \n          \"type\": \"string\",\n          \"description\": \"Texto da mensagem OU código de mídia (image1-5, video1-5, pdf1-3, audio1-4)\"\n        },\n        \"type\": { \n          \"type\": \"string\", \n          \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"],\n          \"description\": \"Tipo do conteúdo\"\n        },\n        \"numero\": { \n          \"type\": \"string\",\n          \"enum\": [\"1\"],\n          \"description\": \"Número da mensagem\"\n        }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message2\": {\n      \"type\": \"object\",\n      \"description\": \"Segunda mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"2\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message3\": {\n      \"type\": \"object\",\n      \"description\": \"Terceira mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"3\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message4\": {\n      \"type\": \"object\",\n      \"description\": \"Quarta mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"4\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message5\": {\n      \"type\": \"object\",\n      \"description\": \"Quinta mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"5\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message6\": {\n      \"type\": \"object\",\n      \"description\": \"Sexta mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"6\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message7\": {\n      \"type\": \"object\",\n      \"description\": \"Sétima mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"7\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message8\": {\n      \"type\": \"object\",\n      \"description\": \"Oitava mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"8\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message9\": {\n      \"type\": \"object\",\n      \"description\": \"Nona mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"9\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message10\": {\n      \"type\": \"object\",\n      \"description\": \"Décima mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"10\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message11\": {\n      \"type\": \"object\",\n      \"description\": \"Décima primeira mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"11\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message12\": {\n      \"type\": \"object\",\n      \"description\": \"Décima segunda mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"12\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message13\": {\n      \"type\": \"object\",\n      \"description\": \"Décima terceira mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"13\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message14\": {\n      \"type\": \"object\",\n      \"description\": \"Décima quarta mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"14\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message15\": {\n      \"type\": \"object\",\n      \"description\": \"Décima quinta mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"15\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message16\": {\n      \"type\": \"object\",\n      \"description\": \"Décima sexta mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"16\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message17\": {\n      \"type\": \"object\",\n      \"description\": \"Décima sétima mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"17\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message18\": {\n      \"type\": \"object\",\n      \"description\": \"Décima oitava mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"18\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message19\": {\n      \"type\": \"object\",\n      \"description\": \"Décima nona mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"19\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    },\n    \"message20\": {\n      \"type\": \"object\",\n      \"description\": \"Vigésima mensagem.\",\n      \"properties\": {\n        \"conteudo\": { \"type\": \"string\" },\n        \"type\": { \"type\": \"string\", \"enum\": [\"message\", \"image\", \"video\", \"pdf\", \"audio\"] },\n        \"numero\": { \"type\": \"string\", \"enum\": [\"20\"] }\n      },\n      \"required\": [\"conteudo\", \"type\", \"numero\"]\n    }\n  },\n  \"required\": [\"message1\"],\n  \"additionalProperties\": false\n}\n",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -2288,
+        1392
+      ],
+      "id": "e21c1645-f364-4d06-822d-56b095cd8aaa",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE chat_messages (\n    id SERIAL PRIMARY KEY,                -- Identificador único da mensagem\n    session_id UUID NOT NULL,             -- Identifica a conversa do usuário (ex: wa_id do WhatsApp)\n    role VARCHAR(10) NOT NULL,            -- 'user' para usuário, 'bot' para mensagens do bot\n    message TEXT NOT NULL,                -- Conteúdo da mensagem\n    sent_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), -- Data/hora de envio da mensagem\n    rechamada BOOLEAN DEFAULT FALSE       -- Indica se já foi feito o follow-up (rechamada)\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2160,
+        672
+      ],
+      "id": "659900e6-a40a-47a6-823c-f312ac9baf35",
+      "name": "CRIAR TABELAS",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "seconds",
+              "secondsInterval": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2832,
+        1744
+      ],
+      "id": "d3640d2d-1624-4af0-a05c-3601d00d1430",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "740050119202275",
+        "recipientPhoneNumber": "={{ $json.session_id }}",
+        "textBody": "Vi que ficou um tempinho off! Quer que eu te envie de novo os valores e detalhes dos pacotes pra facilitar?",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -2336,
+        1744
+      ],
+      "id": "dbd91eae-72e4-49e7-afb3-d1127de2a0d6",
+      "name": "Send message",
+      "webhookId": "a2500a08-b652-4d29-91c8-fed3605fb7a1",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "dWUzqM9TXaEm1oIU",
+          "name": "WhatsApp Cloud API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT DISTINCT session_id\nFROM chat_messages\nWHERE role = 'bot'\n  AND sent_at <= NOW() - INTERVAL '2 minutes'\n  AND rechamada = FALSE\n  AND sent_at = (\n      SELECT MAX(sent_at)\n      FROM chat_messages cm2\n      WHERE cm2.session_id = chat_messages.session_id\n  )",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2560,
+        1744
+      ],
+      "id": "15693a41-4e25-47d1-83da-e46e54520ed6",
+      "name": "SELECIONAR NUMERO USUARIO INAT.",
+      "credentials": {
+        "postgres": {
+          "id": "jmEV3uqN3pREBjJD",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_messages",
+          "mode": "list",
+          "cachedResultName": "chat_messages"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "rechamada": false,
+            "session_id": "={{ $('WhatsApp Trigger1').item.json.contacts[0].wa_id }}",
+            "message": "=",
+            "sent_at": "={{ $now.toFormat('yyyy-MM-dd HH:mm:ss') }}",
+            "role": "user"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "role",
+              "displayName": "role",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sent_at",
+              "displayName": "sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "rechamada",
+              "displayName": "rechamada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1504,
+        528
+      ],
+      "id": "fc081960-40cd-4fa0-91b5-4d3064bdbf32",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "jmEV3uqN3pREBjJD",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "ALTER TABLE chat_messages\nALTER COLUMN session_id TYPE VARCHAR(30);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2336,
+        672
+      ],
+      "id": "792cb00c-df7f-44b3-96d8-a7642cf50913",
+      "name": "ALTER TABLE PARA CORRIGIR TIPO DE COLUNA",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_messages",
+          "mode": "list",
+          "cachedResultName": "chat_messages"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "rechamada": false,
+            "session_id": "={{ $('WhatsApp Trigger1').item.json.contacts[0].wa_id }}",
+            "message": "=",
+            "sent_at": "={{ $now.toFormat('yyyy-MM-dd HH:mm:ss') }}",
+            "role": "bot"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "role",
+              "displayName": "role",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sent_at",
+              "displayName": "sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "rechamada",
+              "displayName": "rechamada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1056,
+        528
+      ],
+      "id": "8a8e2d0d-4b15-4834-867b-bc2241c3b8f0",
+      "name": "MESSAGE 1",
+      "credentials": {
+        "postgres": {
+          "id": "jmEV3uqN3pREBjJD",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM chat_messages;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2016,
+        672
+      ],
+      "id": "1bcde4c1-5057-43ff-a2ac-89e111c6f4c1",
+      "name": "DELETE TUDO",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "O TRIO MONSTRO\n",
+        "height": 272,
+        "width": 512,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2384,
+        592
+      ],
+      "typeVersion": 1,
+      "id": "79b63172-a2f4-43aa-817a-ae09e762afc4",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_messages",
+          "mode": "list",
+          "cachedResultName": "chat_messages"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "rechamada": true,
+            "session_id": "={{ $json.contacts[0].wa_id }}"
+          },
+          "matchingColumns": [
+            "session_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "role",
+              "displayName": "role",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sent_at",
+              "displayName": "sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "rechamada",
+              "displayName": "rechamada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2144,
+        1744
+      ],
+      "id": "81f09627-5709-4f7a-907b-20eb2f679553",
+      "name": "Update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "jmEV3uqN3pREBjJD",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "message",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "a54d3490-107f-4d33-ae27-0a7e4a4fea2e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "message"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "924ca273-b740-40cd-a4f1-2795efdcefd8",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "video",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "video"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "17d09ad7-7340-4c76-87f7-c3a6381cd9f7",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "audio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "fbe0b51c-0aa5-4a3b-8d72-3c3170e0b392",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pdf"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "90f7b9f5-faa0-479b-b863-14291482fcdf",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "image",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "image"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -1392,
+        1152
+      ],
+      "id": "6f22cb95-2031-43c3-ab8a-794f005d2c6c",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $json.output || $json;\nconst result = [];\nfor (let i = 1; i <= 20; i++) {\n  const msg = output[`message${i}`];\n  if (msg && (msg.conteudo.trim() !== \"\" || msg.type !== \"message\")) {\n    result.push({ json: { ...msg, order: i } });\n  }\n}\nreturn result;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2112,
+        1184
+      ],
+      "id": "cc72cb21-ece8-4815-aca0-7a1540c9fd9b",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1904,
+        1184
+      ],
+      "id": "4e325ce0-1624-410f-b17d-db6c389f5b4f",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "740050119202275",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger1').item.json.messages[0].from }}",
+        "textBody": "={{ $json.conteudo }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -880,
+        960
+      ],
+      "id": "776906e1-a60a-4626-a09a-c2d4cef529b5",
+      "name": "SEND MESSAGE",
+      "webhookId": "d2939965-567c-45f6-8df8-c224d71ec102",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 100,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "dWUzqM9TXaEm1oIU",
+          "name": "WhatsApp Cloud API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "740050119202275",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger1').item.json.messages[0].from }}",
+        "messageType": "image",
+        "mediaLink": "={{ $json.conteudo }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -880,
+        1776
+      ],
+      "id": "f1df20d6-eb00-4f75-af4c-e4e7b2307d4e",
+      "name": "SEND IMAGE",
+      "webhookId": "73e53c59-a38e-4281-a443-b1f90f54b1a5",
+      "retryOnFail": true,
+      "waitBetweenTries": 100,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "dWUzqM9TXaEm1oIU",
+          "name": "WhatsApp Cloud API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "740050119202275",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger1').item.json.messages[0].from }}",
+        "messageType": "audio",
+        "mediaLink": "={{ $json.conteudo }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -880,
+        1344
+      ],
+      "id": "3eef6211-b40b-4910-a15e-2e3102f6d29c",
+      "name": "SEND AUDIO",
+      "webhookId": "73e53c59-a38e-4281-a443-b1f90f54b1a5",
+      "retryOnFail": true,
+      "waitBetweenTries": 100,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "dWUzqM9TXaEm1oIU",
+          "name": "WhatsApp Cloud API"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        1200
+      ],
+      "id": "3ba59252-adb4-4ba1-b476-7dcd244f3cbe",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v18.0/740050119202275/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAWLBSyZCXZB0BP3fNzjRzIZCMiacUgZC9FACF0d1342ITuXoHZAZCN0EKmhkQSGpbiCRaSdY2Sb2Ht5U8J8NOPSbR3ADwWmdeeRYbeg7vURPeXY1rpvPjZCLgpWvctc5kMZBmI0OAZBPyCN6ZAvF82DrUPmVgGZA5c8BTsxjRsgclOXY2PG84Gzaso1W95uuzTrUZAelPWcHATx8lJS5t794vuCZCipTShVylScZCilZCHS2tftoBPqgZDZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"recipient_type\": \"individual\",\n  \"to\": \"{{ $('WhatsApp Trigger1').item.json.messages[0].from }}\",\n  \"type\": \"document\",\n  \"document\": {\n    \"link\": \"https://drive.google.com/uc?export=download&id=1MeabyGz-2z0FrE0sAgKiGegs3MIMtJ1I\",\n    \"filename\": \"seuarquivo.pdf\",\n    \"caption\": \"Aqui está o seu PDF!\"\n  }\n} ",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -352,
+        1680
+      ],
+      "id": "5c15dd7a-fdf7-4118-8991-19181c6dc0fd",
+      "name": "SEND PDF HTTP",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1snFbd8dIt1iz8EYLd2ZqJ8JyDcY-hhWH",
+          "mode": "list",
+          "cachedResultName": "CATALAGO UP DESIGNER.pdf",
+          "cachedResultUrl": "https://drive.google.com/file/d/1snFbd8dIt1iz8EYLd2ZqJ8JyDcY-hhWH/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -880,
+        1536
+      ],
+      "id": "42604efe-ba16-4241-a8eb-45d0ec855249",
+      "name": "Download file",
+      "retryOnFail": true,
+      "waitBetweenTries": 100,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "QKQ7lLwOMbxCVWk3",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "740050119202275",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger1').item.json.messages[0].from }}",
+        "messageType": "document",
+        "mediaPath": "useMedian8n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -640,
+        1536
+      ],
+      "id": "76ad6edd-fd4d-42bb-a160-ec357830da3d",
+      "name": "SEND PDF",
+      "webhookId": "73e53c59-a38e-4281-a443-b1f90f54b1a5",
+      "retryOnFail": true,
+      "waitBetweenTries": 100,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "dWUzqM9TXaEm1oIU",
+          "name": "WhatsApp Cloud API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -2288,
+        1552
+      ],
+      "id": "c3fe1ecb-8e08-4201-93c7-5def82be3629",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "mjgNYXAOtvAwfwrD",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "740050119202275",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger1').item.json.messages[0].from }}",
+        "messageType": "video",
+        "mediaLink": "={{ $json.conteudo }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -880,
+        1168
+      ],
+      "id": "36308296-9c5f-4144-824e-34565c6ab11a",
+      "name": "SEND VIDEO",
+      "webhookId": "73e53c59-a38e-4281-a443-b1f90f54b1a5",
+      "retryOnFail": true,
+      "waitBetweenTries": 100,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "dWUzqM9TXaEm1oIU",
+          "name": "WhatsApp Cloud API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1616,
+        1200
+      ],
+      "id": "7f77a538-3d75-41e4-948c-029359792294",
+      "name": "Wait1",
+      "webhookId": "f1297529-1661-4f99-a33b-ede5effdf301"
+    },
+    {
+      "parameters": {
+        "amount": 0.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1280,
+        528
+      ],
+      "id": "fab90697-8347-474a-ace4-884a1ac9aa11",
+      "name": "Wait",
+      "webhookId": "3351e441-efc0-4a0d-b036-bd71aa589ed3"
+    }
+  ],
+  "pinData": {
+    "WhatsApp Trigger1": [
+      {
+        "json": {
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "15551791204",
+            "phone_number_id": "740050119202275"
+          },
+          "contacts": [
+            {
+              "profile": {
+                "name": "Daniel Alvarez"
+              },
+              "wa_id": "5521969547552"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5521969547552",
+              "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYIEFDRUQzMjMzMzAwNkJDNjIzNkUyRTg1QkFBMjA1RkRBAA==",
+              "timestamp": "1761135619",
+              "text": {
+                "body": "pode me mandar novamente o prata?"
+              },
+              "type": "text"
+            }
+          ],
+          "field": "messages"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Trigger1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "SELECIONAR NUMERO USUARIO INAT.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SELECIONAR NUMERO USUARIO INAT.": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MESSAGE 1": {
+      "main": [
+        []
+      ]
+    },
+    "Send message": {
+      "main": [
+        [
+          {
+            "node": "Update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "SEND MESSAGE",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SEND VIDEO",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SEND AUDIO",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SEND IMAGE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEND MESSAGE": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEND AUDIO": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEND IMAGE": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "SEND PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEND PDF": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEND VIDEO": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "MESSAGE 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4d8dd644-38ef-477b-9e7d-69edcc5c199c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8c44fd98360b2df56fd24b11490bc1593146f902eea0c852eff423782c342a2c"
+  },
+  "id": "j9UItrklGNHbdzl5",
+  "tags": []
+}
