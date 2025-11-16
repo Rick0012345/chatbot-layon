@@ -16,6 +16,9 @@ services:
       - N8N_PUBLIC_API_ENDPOINT=api
     volumes:
       - chatbot_layon_n8n_data:/home/node/.n8n
+      # Monta a pasta local com os documentos para dentro do container
+      # Importante: use barras normais (/) mesmo no Windows
+      - c:/Users/po442/OneDrive/Desktop/Nova pasta:/data
     networks:
       - lanchonete-network
 
@@ -51,7 +54,7 @@ services:
       - lanchonete-network
 
   redis:
-    image: redis:7
+    image: redis/redis-stack-server:latest
     container_name: chatbot-layon-redis
     restart: unless-stopped
     ports:

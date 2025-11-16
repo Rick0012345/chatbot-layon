@@ -1,0 +1,1048 @@
+{
+  "name": "TESTE RAG",
+  "nodes": [
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1040,
+        1152
+      ],
+      "id": "2e1ab54b-3329-4572-8027-0c9f020cda4c",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "byfSf2daIyjWaYdm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "id": "4e71cd23-5ef1-4938-b1cf-6e1ed6d94c49",
+      "name": "WhatsApp Trigger1",
+      "position": [
+        -1056,
+        960
+      ],
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "webhookId": "964cfd97-c278-4c9f-8a91-aad9289b632c",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "Lv9lqv3eZUrMAbxC",
+          "name": "WhatsApp OAuth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.messages[0].text.body }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "={\n  \"systemMessage\": \"### PERSONA ###\\nVocê é o assistente de vendas da Vortex.\\nSeu tom de voz é humano, direto, estratégico e focado em resultados.\\n\\n### OBJETIVO ###\\nSeu único objetivo é guiar o lead pela 'Linha Contínua' (funil de vendas) até o fechamento. Seu foco é 100% em conversão ética.\\n\\n### REGRAS DE COMUNICAÇÃO (OBRIGATÓRIAS) ###\\n1.  **Frases Curtas:** Seja direto. Evite blocos longos de texto.\\n2.  **1 Objetivo por Mensagem:** Nunca confunda o cliente com múltiplas perguntas.\\n3.  **Micro-CTA SEMPRE:** Toda mensagem SUA DEVE terminar com uma pergunta ou comando claro para mover o cliente para o próximo passo (ex: 'Faz sentido?', 'Posso te mostrar?').\\n4.  **Valor Antes do Preço:** Nunca informe um preço sem antes apresentar o valor/benefício da solução.\\n\\n### FLUXO DE VENDAS (LINHA CONTÍNUA) ###\\nSiga rigorosamente este fluxo:\\n1.  **ENTRADA (Boas-vindas):** Responda à saudação (ex: \\\"Olá!\\\", \\\"Bom dia!\\\").\\n2.  **COLETA (Qualificação):** Faça a *primeira* pergunta de qualificação, que você JÁ SABE DE CABEÇA: \\\"Como está a sua presença digital hoje? Já tem alguma marca ou está começando do zero?\\\"\\n3.  **VALOR (Apresentar solução):** Com base na resposta, apresente a solução.\\n4.  **OPCOES (Apresentar pacotes):** Apresente os pacotes (Use o RAG para buscar os detalhes e preços).\\n5.  **FECHAMENTO (Confirmar escolha):** Cliente escolhe um plano.\\n6.  **PAGAMENTO (Confirmar envio do link):** Cliente confirma, você pede para o sistema enviar o link (O RAG não tem links, você apenas confirma o valor).\\n7.  **ENCERRAMENTO (Agradecimento pós-pagamento).\\n\\n### USO DA FERRAMENTA RAG (knowledge_base) ###\\nEsta é sua ferramenta de consulta. Use-a APENAS quando precisar de dados FAKTUEL e específicos que você não sabe de cabeça.\\n\\n**NÃO USE A FERRAMENTA PARA:**\\n* **Responder a saudações:** Você sabe responder \\\"Olá\\\" sozinho.\\n* **Fazer a primeira pergunta de qualificação:** Você já sabe qual é (está na seção FLUXO DE VENDAS).\\n\\n**USE A FERRAMENTA OBRIGATORIAMENTE PARA:**\\n* **Buscar Preços e Entregáveis:** Quando o cliente perguntar \\\"o que vem no plano Prata?\\\" ou \\\"quanto custa o Ouro?\\\".\\n* **Buscar Respostas de Objeções:** Quando o cliente disser \\\"é caro\\\", \\\"vou pensar\\\", \\\"é seguro?\\\".\\n* **Buscar Informações da Empresa:** CNPJ, endereço, portfólio (Fast Shop, Marisa, etc.).\\n* **Buscar Perguntas de Qualificação (Avançadas):** Se precisar de mais perguntas do SPIN/BANT *depois* da primeira.\\n\\n### REGRAS DE SAÍDA (Output Parser) ###\\n* Sua resposta DEVE ser um JSON contendo uma lista 'mensagens' com 1 ou 2 strings (ex: {\\\"mensagens\\\": [\\\"Msg 1\\\", \\\"Msg 2 (CTA)\\\"]}).\\n* A última string da lista DEVE ser sempre um Micro-CTA (uma pergunta ou comando).\\n* Após o cliente confirmar o pagamento, envie uma mensagem de agradecimento para encerrar o atendimento.\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -848,
+        960
+      ],
+      "id": "4e279950-626b-4c8d-9c1c-3cc3b9ca8cdd",
+      "name": "AI Agent2",
+      "retryOnFail": true,
+      "maxTries": 4
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.messages[0].from }}",
+        "sessionTTL": 3000,
+        "contextWindowLength": 15
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        -880,
+        1152
+      ],
+      "id": "8ab1c275-cfa7-4953-ba3f-fda141e89e30",
+      "name": "Redis Chat Memory1",
+      "credentials": {
+        "redis": {
+          "id": "d34TnYdlfXwNojDp",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"mensagens\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" },\n      \"minItems\": 1,\n      \"maxItems\": 2,\n      \"description\": \"Uma lista de 1 ou 2 strings de mensagem. A primeira é a resposta principal. A segunda (se houver) é o micro-CTA. A última mensagem na lista DEVE ser sempre uma pergunta/CTA.\"\n    }\n  },\n  \"required\": [\"mensagens\"],\n  \"additionalProperties\": false\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -528,
+        1168
+      ],
+      "id": "3636f46d-1f36-47e9-95ce-00ea2b2bc8d4",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE chat_messages (\n    id SERIAL PRIMARY KEY,                -- Identificador único da mensagem\n    session_id UUID NOT NULL,             -- Identifica a conversa do usuário (ex: wa_id do WhatsApp)\n    role VARCHAR(10) NOT NULL,            -- 'user' para usuário, 'bot' para mensagens do bot\n    message TEXT NOT NULL,                -- Conteúdo da mensagem\n    sent_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), -- Data/hora de envio da mensagem\n    rechamada BOOLEAN DEFAULT FALSE       -- Indica se já foi feito o follow-up (rechamada)\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -176,
+        48
+      ],
+      "id": "6bd876a4-58bc-4d2a-89b8-57a379de873b",
+      "name": "CRIAR TABELAS",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_messages",
+          "mode": "list",
+          "cachedResultName": "chat_messages"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "rechamada": false,
+            "session_id": "={{ $('WhatsApp Trigger1').first().json.contacts[0].wa_id }}",
+            "message": "=",
+            "sent_at": "={{ $now.toFormat('yyyy-MM-dd HH:mm:ss') }}",
+            "role": "user"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "role",
+              "displayName": "role",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sent_at",
+              "displayName": "sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "rechamada",
+              "displayName": "rechamada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        336,
+        800
+      ],
+      "id": "6d5468c6-412f-43fc-87b9-40eff3c9c56b",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "zatnGnxMczro8wRm",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "ALTER TABLE chat_messages\nALTER COLUMN session_id TYPE VARCHAR(30);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -352,
+        48
+      ],
+      "id": "89b83c31-ed8b-4b54-ba8f-65cff32a3d75",
+      "name": "ALTER TABLE PARA CORRIGIR TIPO DE COLUNA",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_messages",
+          "mode": "list",
+          "cachedResultName": "chat_messages"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "rechamada": false,
+            "session_id": "={{ $('WhatsApp Trigger1').first().json.contacts[0].wa_id }}",
+            "message": "=",
+            "sent_at": "={{ $now.toFormat('yyyy-MM-dd HH:mm:ss') }}",
+            "role": "bot"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "role",
+              "displayName": "role",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sent_at",
+              "displayName": "sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "rechamada",
+              "displayName": "rechamada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        752,
+        800
+      ],
+      "id": "f4da0d53-1c67-4cfc-ba34-a8e1c05b3380",
+      "name": "MESSAGE 1",
+      "credentials": {
+        "postgres": {
+          "id": "zatnGnxMczro8wRm",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM chat_messages;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -32,
+        48
+      ],
+      "id": "b983e550-ceed-4c2d-8c24-27cab5a90283",
+      "name": "DELETE TUDO",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "O TRIO MONSTRO\n",
+        "height": 272,
+        "width": 512,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -400,
+        -32
+      ],
+      "typeVersion": 1,
+      "id": "81c13f84-a094-4a29-a11d-589a41f9dc09",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "740050119202275",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger1').item.json.messages[0].from }}",
+        "textBody": "={{ $json.text.body }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -224,
+        960
+      ],
+      "id": "e786c81f-ffa9-47cc-a55b-cda97caf65c0",
+      "name": "SEND MESSAGE",
+      "webhookId": "d2939965-567c-45f6-8df8-c224d71ec102",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 100,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "UA7fntD6z61qwrjb",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -528,
+        1344
+      ],
+      "id": "bea830a6-dafb-4e3a-b940-c87240f0d7e4",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "byfSf2daIyjWaYdm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 0.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        800
+      ],
+      "id": "dcb6753e-6e5c-4bc2-aae1-7dc6dcd7cd43",
+      "name": "Wait",
+      "webhookId": "3351e441-efc0-4a0d-b036-bd71aa589ed3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        128,
+        800
+      ],
+      "id": "be515932-dd30-4661-9953-813ce5a4f1f5",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "={{$('WhatsApp Trigger1').first().json.messages[0].from}}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        688,
+        976
+      ],
+      "id": "7fa32764-658b-43c1-bf1e-4057a90c14b9",
+      "name": "Redis",
+      "credentials": {
+        "redis": {
+          "id": "d34TnYdlfXwNojDp",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9fdffeb0-3baa-4801-80d3-4cf3bcc1fc31",
+              "leftValue": "={{ $json.resultado }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        496,
+        992
+      ],
+      "id": "c5148605-2d09-40ec-a255-3e54455a49ee",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_messages",
+          "mode": "list",
+          "cachedResultName": "chat_messages"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "session_id",
+              "value": "={{$('WhatsApp Trigger1').first().json.messages[0].from}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        864,
+        976
+      ],
+      "id": "dcd62806-a20f-4c12-b4f0-37cb3ae75240",
+      "name": "Delete table or rows",
+      "credentials": {
+        "postgres": {
+          "id": "zatnGnxMczro8wRm",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega a saída do Agente (que agora é {\"mensagens\": [\"msg1\", \"msg2\"]})\nconst output = $json.output || $json;\nconst result = [];\n\nif (output && Array.isArray(output.mensagens)) {\n  const mensagens = output.mensagens;\n\n  for (let i = 0; i < mensagens.length; i++) {\n    const msg = mensagens[i];\n    if (typeof msg === \"string\" && msg.trim() !== \"\") {\n      // Cria um item de saída para cada mensagem na lista\n      result.push({\n        json: {\n          type: \"text\",\n          text: {\n            body: msg.trim(),\n          },\n          order: i + 1,\n        },\n      });\n    }\n  }\n}\n\n// Se der erro ou a IA não retornar nada, envia uma msg padrão\nif (result.length === 0) {\n  return [\n    {\n      json: {\n        type: \"text\",\n        text: {\n          body: \"Não entendi, pode repetir?\",\n        },\n        order: 1,\n      },\n    },\n  ];\n}\n\nreturn result;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -544,
+        960
+      ],
+      "id": "2769a203-43b0-450e-bc40-68cdc77da31f",
+      "name": "Processar Saída do Agente"
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $('AI Agent2').first().json.output || $json;\nconst result = [];\n\nconst mensagens = [\"mensagem\", \"micro_cta\"];\n\nfor (let i = 0; i < mensagens.length; i++) {\n  const key = mensagens[i];\n  const msg = output[key];\n\n  if (typeof msg === \"string\" && msg.trim() !== \"\") {\n    result.push({\n      json: {\n        conteudo: msg.trim(),\n        type: \"message\",\n        numero: String(i + 1),\n        order: i + 1,\n      },\n    });\n  } else if (msg && typeof msg.conteudo === \"string\" && msg.conteudo.trim() !== \"\") {\n    result.push({\n      json: {\n        ...msg,\n        order: i + 1,\n      },\n    });\n  }\n}\n\nreturn result.length > 0 ? result : [{ json: { error: \"Nenhuma mensagem válida encontrada.\" } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        960
+      ],
+      "id": "7d82d24e-d0e0-48f0-8650-fcf7cfcd265c",
+      "name": "Preparar Mensagens para Loop"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst links = [\n  \"https://pay.cakto.com.br/yprdmik_624343\",\n  \"https://pay.cakto.com.br/3bhwur2_624356\",\n  \"https://pay.cakto.com.br/37qb9pb_624361\"\n];\n\nlet resultado = false;\n\nfor (let i = 0; i < items.length; i++) {\n  const type = items[i].json.type || '';\n  const conteudo = items[i].json.conteudo || '';\n  if (\n    type === \"message\" &&\n    links.some(link => conteudo.includes(link))\n  ) {\n    resultado = true;\n    break;\n  }\n}\n\nreturn [{ json: { resultado } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        336,
+        992
+      ],
+      "id": "e4948445-06b0-499c-a08b-9c6a46e6b46d",
+      "name": "Detectar Links Pagamento"
+    },
+    {
+      "parameters": {
+        "formTitle": "Upload your data to test RAG",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Upload your file(s)",
+              "fieldType": "file",
+              "acceptFileTypes": ".pdf, .csv, .md",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -1872,
+        1136
+      ],
+      "id": "9ca744e9-1172-40f1-91cd-dcded0acdf33",
+      "name": "Upload your file here",
+      "webhookId": "82848bc4-5ea2-4e5a-8bb6-3c09b94a8c5d"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "binaryPropertyName": "=Upload_your_file_s_",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -1632,
+        1136
+      ],
+      "id": "1bb2e78a-8734-4ce8-bd33-b7fed2c703b4",
+      "name": "Extract from File",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "redisIndex": {
+          "__rl": true,
+          "value": "rag_index",
+          "mode": "id"
+        },
+        "embeddingBatchSize": 1024,
+        "options": {
+          "overwriteDocuments": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreRedis",
+      "typeVersion": 1.3,
+      "position": [
+        -1392,
+        1136
+      ],
+      "id": "70c486bd-bec2-4b54-885a-a882c4618552",
+      "name": "Redis Vector Store",
+      "credentials": {
+        "redis": {
+          "id": "d34TnYdlfXwNojDp",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "dimensions": 1024
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1392,
+        1504
+      ],
+      "id": "b8e3a4b5-ab6b-4aea-ba16-e9b82af04e32",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "byfSf2daIyjWaYdm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        -1264,
+        1328
+      ],
+      "id": "0d7d16ad-0f2a-4fd6-a6ff-bbf9e68fc8b7",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Ferramenta OBRIGATÓRIA para consultar a base de conhecimento (RAG) da Up Designer. Use-a para recuperar informações FAKTUEL e SCRIPTS PRONTOS que a persona \"Layon Maia\" deve usar.\n\nConsultar esta ferramenta para:\n* **Preços e Pacotes:** Buscar valores, descrições (pitch) e links de pagamento dos planos Bronze, Prata e Ouro.\n* **Scripts de Objeções:** Encontrar a resposta exata para objeções do cliente (ex: \"quanto custa?\", \"é caro\", \"preciso pensar\", \"é seguro?\").\n* **Perguntas de Qualificação:** Obter as perguntas específicas (SPIN/BANT) para fazer ao cliente (ex: \"Como está sua presença digital?\", \"O que mais te preocupa?\").\n* **Micro-CTAs (Chamadas para Ação):** Buscar as frases exatas para terminar uma mensagem e pedir o próximo passo (ex: \"Faz sentido pra você?\", \"Posso enviar o link seguro?\").\n\n**NÃO USAR PARA:** Buscar regras de personalidade ou tom de voz (ex: \"Seja humano\", \"Use frases curtas\"). Esta ferramenta é apenas para buscar DADOS e SCRIPTS.",
+        "redisIndex": {
+          "__rl": true,
+          "value": "rag_index",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreRedis",
+      "typeVersion": 1.3,
+      "position": [
+        -832,
+        1296
+      ],
+      "id": "ceab1350-3a0e-4586-88ff-9703c67a62b7",
+      "name": "Redis Vector Store1",
+      "credentials": {
+        "redis": {
+          "id": "d34TnYdlfXwNojDp",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -368,
+        960
+      ],
+      "id": "86905c7f-b687-48bb-8dee-1da3fc83301c",
+      "name": "Wait1",
+      "webhookId": "82b15df0-e35d-4ffc-b6ee-6884ef032af2"
+    }
+  ],
+  "pinData": {
+    "WhatsApp Trigger1": [
+      {
+        "json": {
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "15551791204",
+            "phone_number_id": "740050119202275"
+          },
+          "contacts": [
+            {
+              "profile": {
+                "name": "Daniel Alvarez"
+              },
+              "wa_id": "5521969547552"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5521969547552",
+              "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYFjNFQjA4RUE4M0YzMkNCNTlDQzY2QkEA",
+              "timestamp": "1762519850",
+              "text": {
+                "body": "pode sim"
+              },
+              "type": "text"
+            }
+          ],
+          "field": "messages"
+        }
+      }
+    ],
+    "Extract from File": [
+      {
+        "json": {
+          "data": "# BASE DE CONHECIMENTO (FATOS) - VORTEX\r\n---\r\n## 1. PACOTES, PREÇOS & ENTREGÁVEIS\r\n\r\n[cite_start]⚠ **ATENÇÃO:** Os pagamentos são processados pela Appmax[cite: 10]. O PDF não forneceu links de pagamento direto. O bot deve informar o preço e aguardar o cliente escolher o plano antes de solicitar a geração de um link.\r\n\r\n### Plano BRONZE\r\n* [cite_start]**Pitch:** \"É o nosso pacote essencial com 40% de desconto. Inclui a criação do seu logotipo com alterações ilimitadas e brindes exclusivos.\" [cite: 42, 44, 48]\r\n* [cite_start]**Valor:** De R$ 247,00 por **R$ 147,00** [cite: 54, 55]\r\n* **Entregáveis:**\r\n    * [cite_start]Criação ou Melhoria de Logotipo [cite: 42]\r\n    * [cite_start]Arquivos em alta qualidade [cite: 43]\r\n    * [cite_start]Alterações Ilimitadas [cite: 44]\r\n    * [cite_start]Todos os Formatos [cite: 45]\r\n    * [cite_start]Versões para Fundo Claro e Escuro [cite: 46]\r\n    * [cite_start]Suporte Via WhatsApp [cite: 47]\r\n* **Brindes:**\r\n    * [cite_start]Animação 3D [cite: 50]\r\n    * [cite_start]Foto de Perfil / Mockup 3D [cite: 51]\r\n    * [cite_start]Figurinhas personalizadas WhatsApp [cite: 52]\r\n\r\n### Plano PRATA\r\n* [cite_start]**Pitch:** \"Nosso pacote mais popular, com 50% de desconto. Inclui tudo do Bronze, mas com mais brindes para profissionalizar suas redes, como Cartão de Visitas e Capa para Facebook.\" [cite: 63, 69, 70]\r\n* [cite_start]**Valor:** De R$ 494,00 por **R$ 247,00** [cite: 72, 73]\r\n* **Entregáveis:**\r\n    * [cite_start]Tudo do Plano Bronze (Logotipo, Alta qualidade, Alterações Ilimitadas, etc.) [cite: 57, 58, 59, 60, 61, 62]\r\n* **Brindes:**\r\n    * [cite_start]3 Animações 3D [cite: 65]\r\n    * [cite_start]2 Fotos de Perfil / Mockup 3D [cite: 66]\r\n    * [cite_start]Figurinhas personalizadas WhatsApp [cite: 67]\r\n    * [cite_start]Pack Extra de Figurinhas [cite: 68]\r\n    * [cite_start]Cartão de Visitas [cite: 69]\r\n    * [cite_start]Capa para Facebook [cite: 70]\r\n\r\n### Plano OURO\r\n* [cite_start]**Pitch:** \"A solução definitiva com 68% de desconto. Seu projeto é feito pelo Chefe Designer e vem com todos os brindes, incluindo itens de papelaria e o Cartão Digital.\" [cite: 75, 82, 91]\r\n* [cite_start]**Valor:** De R$ 1.200,00 por **R$ 397,00** [cite: 96, 97]\r\n* **Entregáveis:**\r\n    * [cite_start]Projeto feito pelo **Chefe Designer** [cite: 75]\r\n    * [cite_start]Tudo do Plano Bronze (Logotipo, Alta qualidade, Alterações Ilimitadas, etc.) [cite: 76, 77, 78, 79, 80, 81]\r\n* **Brindes:**\r\n    * [cite_start]5 Animações 3D [cite: 84]\r\n    * [cite_start]4 Fotos de Perfil / Mockup 3D [cite: 85]\r\n    * [cite_start]Figurinhas personalizadas WhatsApp [cite: 86]\r\n    * [cite_start]Pack Extra de Figurinhas [cite: 87]\r\n    * [cite_start]Cartão de Visitas [cite: 88]\r\n    * [cite_start]Capa para Facebook [cite: 89]\r\n    * [cite_start]Capa para Destaques Instagram [cite: 90]\r\n    * [cite_start]Cartão de Visitas Digital [cite: 91]\r\n    * [cite_start]Papel Timbrado [cite: 92]\r\n    * [cite_start]Envelope Pequeno [cite: 93]\r\n    * [cite_start]Pasta Canguru [cite: 94]\r\n\r\n---\r\n\r\n## 2. ITENS ADICIONAIS (VENDA AVULSA)\r\n\r\n[cite_start][cite: 101]\r\n* Perfil: R$ 49,90\r\n* Capa: R$ 49,90\r\n* Fundo de Post: R$ 69,90\r\n* Papel de Parede de PC: R$ 49,90\r\n* Assinatura de E-mail: R$ 69,90\r\n* Wallpaper: R$ 59,90\r\n* Cartão de Visitas: R$ 69,90\r\n* Pasta: R$ 69,90\r\n* Envelope: R$ 69,90\r\n* Papel Timbrado: R$ 69,90\r\n* QR Code para PIX: R$ 89,90\r\n* Cartão Digital: R$ 149,90\r\n* QR Card (Novidade): R$ 149,90\r\n* Caneca: R$ 49,90\r\n* Fachada: R$ 99,90\r\n* Capa de Agenda: R$ 69,90\r\n* Uniforme: R$ 99,90\r\n* Boné: R$ 59,90\r\n* Adesivo: R$ 69,90\r\n* Receituário: R$ 69,90\r\n* Arte Avulsa: consultar\r\n* Portfólio (até 7 pág): R$ 399,90\r\n* Mockup: R$ 69,90\r\n* Sacola: R$ 69,90\r\n* Etiqueta: R$ 69,90\r\n* Placa: R$ 69,90\r\n\r\n---\r\n\r\n## 3. PROVA SOCIAL & CONFIANÇA\r\n\r\n* [cite_start]**CNPJ:** 55.907.242/0001-55 \r\n* [cite_start]**Endereço:** Nosso escritório fica em São Paulo[cite: 13], no Ed. Paulista Corporate, Av. [cite_start]Paulista, 1636[cite: 14].\r\n* [cite_start]**Experiência:** Estamos no mercado desde 2003 [cite: 3] [cite_start]e já entregamos mais de 5.000 marcas no Brasil e no Mundo[cite: 4, 5, 6].\r\n* [cite_start]**Clientes (Portfólio):** Já atendemos grandes marcas como FAST SHOP [cite: 20][cite_start], madeiramadeira [cite: 21][cite_start], YOUCOM [cite: 22][cite_start], marisa [cite: 23] [cite_start]e PONTAL[cite: 24].\r\n* [cite_start]**Pagamento Seguro:** Nossos pagamentos são processados com segurança pela Appmax [cite: 9, 10] [cite_start]e a aprovação é em tempo real[cite: 11].\r\n\r\n---\r\n\r\n## 4. COMO FUNCIONA (PROCESSO)\r\n[cite_start][cite: 25]\r\n1.  [cite_start]**Compra:** O cliente realiza o pagamento[cite: 26].\r\n2.  [cite_start]**Briefing:** Envio e preenchimento do formulário (briefing)[cite: 27, 28].\r\n3.  [cite_start]**Produção:** Produção do logotipo[cite: 29, 30].\r\n4.  [cite_start]**Aprovação:** Apresentação para aprovação ou alteração[cite: 31].\r\n5.  [cite_start]**Brindes:** Produção da animação de brinde[cite: 32, 33].\r\n6.  [cite_start]**Itens Adicionais:** Produção dos itens complementares do pacote[cite: 34, 35].\r\n7.  [cite_start]**Entrega:** Finalização e entrega de todo o material[cite: 36, 37].\r\n\r\n---\r\n\r\n## 5. SCRIPTS DE OBJEÇÕES & RESPOSTAS\r\n\r\n* **\"Quanto custa?\" (Cedo demais):** \"Depende do estilo que melhor posiciona sua marca. Temos pacotes a partir de R$ 147. Posso te mostrar 3 opções e aí falamos de valores, pode ser?\"\r\n* **\"É caro\":** \"Entendo. O valor reflete o retorno que uma marca profissional traz, e nossos pacotes estão com até 68% de desconto. Posso te mostrar o resultado que outros clientes tiveram?\"\r\n* **\"Preciso pensar\":** \"Claro! Total sentido. Enquanto isso, posso garantir essa condição especial com desconto para você?\"\r\n* [cite_start]**\"É seguro?\":** \"Entendo perfeitamente sua preocupação. Por isso, trabalhamos apenas com pagamento seguro via Appmax [cite: 10][cite_start], temos CNPJ ativo (55.907.242/0001-55)  e escritório na Av. [cite_start]Paulista[cite: 14]. Quer ver 2 cases recentes do seu nicho para confirmar?\"\r\n* **\"Já tenho fornecedor/outro designer\":** \"Excelente! É sempre bom comparar. [cite_start]Posso te mostrar sem compromisso os nossos diferenciais, como as Alterações Ilimitadas [cite: 44, 59, 78] e os brindes, pode ser?\"\r\n\r\n---\r\n\r\n## 6. SCRIPTS DE QUALIFICAÇÃO (SPIN/BANT LIGHT)\r\n\r\n* **Situação (S):** \"Como está a sua presença digital hoje? Já tem alguma marca ou está começando do zero?\"\r\n* **Problema (P):** \"O que mais te preocupa na sua imagem atual? Sente que ela transmite o profissionalismo que você entrega?\"\r\n* **Implicação (I):** \"Você acredita que essa imagem atual pode estar afastando clientes de maior valor?\"\r\n* **Necessidade (N):** \"O ideal então seria uma marca que transmitisse [inserir desejo do cliente], certo?\"\r\n* **Budget (B):** \"Nossos pacotes promocionais hoje são R$ 147, R$ 247 e R$ 397. Algum desses se encaixa no seu orçamento para este investimento?\"\r\n* **Timeline (T):** \"Para quando você precisa dessa nova marca rodando?\"\r\n\r\n---\r\n\r\n## 7. MICRO-CTAS (CHAMADAS PARA AÇÃO)\r\n\r\n* \"Faz sentido pra você?\"\r\n* \"Posso te mostrar como funciona?\"\r\n* \"Quer ver um exemplo real?\"\r\n* \"Qual dos 3 planos (Bronze, Prata ou Ouro) atende melhor sua necessidade hoje?\"\r\n* \"Posso reservar seu slot na agenda?\"\r\n* \"Ficou alguma dúvida sobre os entregáveis do pacote [Nome do Pacote]?\""
+        },
+        "binary": {}
+      }
+    ]
+  },
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Trigger1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Processar Saída do Agente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEND MESSAGE": {
+      "main": [
+        [
+          {
+            "node": "Preparar Mensagens para Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "MESSAGE 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Detectar Links Pagamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis": {
+      "main": [
+        [
+          {
+            "node": "Delete table or rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Processar Saída do Agente": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Mensagens para Loop": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detectar Links Pagamento": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload your file here": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Redis Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Redis Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          },
+          {
+            "node": "Redis Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Redis Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "SEND MESSAGE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "55c43ca3-96d4-4cfa-8df8-81ff3946b3c7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f68a9a73963c9909b94c9b4d1663147c9d99da766fa23b233f344186361e4ebb"
+  },
+  "id": "yESeRAkbBFEcXJam",
+  "tags": []
+}
