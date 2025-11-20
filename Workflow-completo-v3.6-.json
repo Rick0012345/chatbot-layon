@@ -1,0 +1,2128 @@
+{
+  "name": "AI-Powered WhatsApp Chatbot for Text, Voice, Images, and PDF with RAG",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Você é Layon, atendente humano da UP Designer. Seu objetivo é conduzir o cliente até a compra de um dos planos (Bronze, Prata ou Ouro) usando perguntas inteligentes, diagnóstico rápido e técnicas das principais escolas de vendas (SPIN, BANT, MEDDIC, Challenger, Sandler e GAP Selling).\n\nUse o documento RAG como base de conhecimento:\n\nRegras de consulta ao RAG:\n\nPara cada pergunta do cliente, consulte a knowledge_base do vector store (RAG)\nUtilize apenas as informações factuais recuperadas do RAG para responder sobre planos, benefícios, preços, links, credibilidade, processo, scripts, objeções e CTAs.\n\n\nregras obrigatórias do conteúdo:\n\nEntenda o cliente com perguntas de diagnóstico (SPIN / BANT / MEDDIC / GAP).\nIdentifique dores, implicações e urgência.\nEnsine e traga insights quando fizer sentido (Challenger).\nReforce autoridade e segurança (Credibilidade).\nApresente o plano ideal com pitch curto e objetivo.\nUse CTAs leves ao final da mensagem, sempre terminando com uma pergunta.\nRegras gerais:\n\nSeja claro e direto.\nUse linguagem natural e humana.\nSempre feche com uma CTA do documento.\nQuando falar de valores, use apenas os do RAG.\nApenas recupere informações factuais do RAG; estilo e comportamento vêm deste system prompt."
+        }
+      },
+      "id": "d1b47f60-5a4d-4629-a18d-b3c6ec0c972c",
+      "name": "Knowledge Base Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        2640,
+        1040
+      ],
+      "typeVersion": 1.9,
+      "retryOnFail": false,
+      "maxTries": 2
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "id": "c36731ce-5086-4a2f-8c3a-63be150fb8ae",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        2576,
+        1264
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "byfSf2daIyjWaYdm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "53c2496a-0737-452c-b49c-ca0afa9c0073",
+      "name": "Embeddings OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "position": [
+        1552,
+        1984
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "byfSf2daIyjWaYdm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "54697b14-28a0-4572-b17e-328a7b52cc90",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        720,
+        1776
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.content }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "doc_id",
+                "value": "={{ $json.documentId }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "8cf54cb6-7247-4036-b1e4-9a28650d700a",
+      "name": "Document Section Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "position": [
+        944,
+        1952
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chunkSize": 3000,
+        "chunkOverlap": 200,
+        "options": {
+          "splitCode": "markdown"
+        }
+      },
+      "id": "4e93e3c3-1847-483a-b6a7-67ff2cff294f",
+      "name": "Document Chunker",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "position": [
+        896,
+        2080
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1qQd97TkWRM8PqMqetU4vBxsKgopwHbEZq73M2O0GFKA/edit?tab=t.0"
+      },
+      "id": "a9368d23-e35f-4986-8060-30a05f3f9c05",
+      "name": "Google Docs Importer",
+      "type": "n8n-nodes-base.googleDocs",
+      "position": [
+        944,
+        1776
+      ],
+      "typeVersion": 2,
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "dyXOpqoFvilC0tGb",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Run this workflow manually to import and index Google Docs product documentation into MongoDB with vector embeddings for fast search.",
+        "color": 5
+      },
+      "id": "1fb0f8a3-9113-4185-a935-0fc327f70881",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        256
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Search Index Example \n\n{\n  \"mappings\": {\n    \"dynamic\": false,\n    \"fields\": {\n      \"_id\": {\n        \"type\": \"string\"\n      },\n      \"text\": {\n        \"type\": \"string\"\n      },\n      \"embedding\": {\n        \"type\": \"knnVector\",\n        \"dimensions\": 1536,\n        \"similarity\": \"cosine\"\n      },\n      \"source\": {\n        \"type\": \"string\"\n      },\n      \"doc_id\": {\n        \"type\": \"string\"\n      }\n    }\n  }\n}\n",
+        "height": 540
+      },
+      "id": "d21fc408-f66d-4b07-972a-811aa420b4ce",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1600,
+        256
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "id": "8842d0c7-082e-4b4e-b350-a8bb8f47c390",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        1840,
+        1104
+      ],
+      "typeVersion": 1.8,
+      "credentials": {
+        "openAiApi": {
+          "id": "byfSf2daIyjWaYdm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "text": "o que está na imagem?",
+        "inputType": "base64",
+        "options": {
+          "detail": "auto"
+        }
+      },
+      "id": "a342dc14-0ffe-41ba-a3e9-853fe043f4fb",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        1840,
+        1280
+      ],
+      "typeVersion": 1.8,
+      "credentials": {
+        "openAiApi": {
+          "id": "byfSf2daIyjWaYdm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "id": "b1220587-fadf-4b5b-944e-b6e60b64c141",
+      "name": "Extract from PDF",
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        2256,
+        1488
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "let requests = $(\"Download Document\").all()\n\nrequests.forEach((request) => {\n  let mime_type = request.json.mime_type\n\n  if (\n    mime_type === \"text/calendar\" || \n    mime_type === \"application/ics\" || \n    mime_type === \"text/x-calendar\"\n  ) {\n    request.json.mime_type = \"mapped/calendar\"\n  }\n\n  if (\n    mime_type === \"application/xml\" || \n    mime_type === \"text/xml\") {\n    request.json.mime_type = \"mapped/xml\"\n  }\n\n  if (!mime_type) {\n    request.json.mime_type = $('Gets WhatsApp Document Source URL').first().json.mime_type\n  }\n})\n\nreturn requests;"
+      },
+      "id": "a0920bc7-71bd-4803-bbce-4cef14cac5ee",
+      "name": "Map file extensions",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1840,
+        1472
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "da68bcca-a2a6-4676-8649-6fb1b664e44c",
+              "name": "text",
+              "type": "string",
+              "value": "=Parsed text: {{ $json.text || $json.data || $json }}\n\nCaption text: {{ $('Route Types').item.json.messages[0].document.caption }}\n\nMimeType: {{ $('Gets WhatsApp Document Source URL').item.json.mime_type }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "77302aa3-6e87-4de6-9ec7-387ddb76fc84",
+      "name": "Map document prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        2432,
+        1344
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "48af2dcc-4ce9-45fc-abfc-54f803930092",
+              "name": "text",
+              "type": "string",
+              "value": "=User image description: {{ $json.content }}\n\nUser image caption: {{ $('Route Types').item.json.messages[0].image.caption }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "90821e49-c98d-4617-8289-1be6d3aeb087",
+      "name": "Map image prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        2048,
+        1280
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "38aec976-a32c-4b0e-85f4-c90adc16abc9",
+              "name": "text",
+              "type": "string",
+              "value": "={{ $json.messages[0].text.body }}"
+            },
+            {
+              "id": "5ae33a41-fdb6-42ba-a4df-6714a70e7073",
+              "name": "from",
+              "value": "={{ $('WhatsApp Trigger1').item.json.messages[0].from }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cf603f5c-0a6e-4cdd-846b-738ed417daa2",
+      "name": "Map text prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        2000,
+        848
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.messages[0].audio.id}}"
+      },
+      "id": "7727e89d-cf21-4440-ab7f-85594eb1ec44",
+      "name": "Gets WhatsApp Voicemail Source URL",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        1392,
+        1104
+      ],
+      "webhookId": "bbe62f3d-8788-49d4-aae6-9e9411446d44",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "UA7fntD6z61qwrjb",
+          "name": "daniel-account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.messages[0].image.id }}"
+      },
+      "id": "08b938a1-d32e-4aa1-958f-bdabd3dfec13",
+      "name": "Gets WhatsApp Image Source URL",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        1392,
+        1280
+      ],
+      "webhookId": "c2982df4-1d8d-4669-a724-44ae17d11e6c",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "UA7fntD6z61qwrjb",
+          "name": "daniel-account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.messages[0].document.id }}"
+      },
+      "id": "d934ce80-cdb0-476d-8896-b8c226086933",
+      "name": "Gets WhatsApp Document Source URL",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        1392,
+        1472
+      ],
+      "webhookId": "c2982df4-1d8d-4669-a724-44ae17d11e6c",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "UA7fntD6z61qwrjb",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "aad1b221-0985-43e7-bc0b-312436171abe",
+      "name": "Download Voicemail",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1632,
+        1104
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "ibUTDZJclFOcZlxe",
+          "name": "Unnamed credential"
+        },
+        "httpHeaderAuth": {
+          "id": "hNBsndCQzaeTiGig",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "dfd08bec-9d30-4125-b167-7feaeefd7afa",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1632,
+        1280
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "hNBsndCQzaeTiGig",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "id": "ba3d221f-ce5c-4105-82cf-fbd11c2c0e2f",
+      "name": "Download Document",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1632,
+        1472
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "hNBsndCQzaeTiGig",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "2fc5c912-629b-4cbe-b5e3-7e3f0651c628",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "text"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "26a3d85c-0815-48ff-85ce-713129a1107c",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "audio"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "840b95b8-6559-4fb7-b32c-651451d6d0d2",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "image"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "3e7a07f9-b785-450c-8c68-f6b276838503",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "document"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Document"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "87ecc44f-cc1f-47e0-b995-079230be118d",
+      "name": "Route Types",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        976,
+        1072
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "64dd4658-54e7-4453-adbc-7067dffcd555",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": "text/plain"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "TXT"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "88b618fd-9a88-491e-91dd-c5fc9efa36e3",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": "application/pdf"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "PDF"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "ea3be820-2ead-4ec2-b292-42d3c7804b55",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": ""
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "ELSE"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ce3d08ce-4445-4473-90b2-227ba065c4d8",
+      "name": "Route Document Types",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        2048,
+        1456
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "740050119202275",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger1').item.json.messages[0].from }}",
+        "textBody": "=Não trabalhamos com esse tipo de arquivo, poderia enviar no formato PDF ou texto?",
+        "additionalFields": {}
+      },
+      "id": "18684032-23ec-4e10-88f4-e93363432a67",
+      "name": "Send Unsupported Response",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        2272,
+        1664
+      ],
+      "webhookId": "017d267f-4897-4726-bf03-304ef10352bf",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "UA7fntD6z61qwrjb",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "740050119202275",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "={{ $json.text.body }}",
+        "additionalFields": {}
+      },
+      "id": "acc8e4ae-0610-42fc-a318-b9a23a38919b",
+      "name": "Send Response",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        4112,
+        1072
+      ],
+      "webhookId": "23834751-5066-48ba-8e19-549680df2b27",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "UA7fntD6z61qwrjb",
+          "name": "daniel-account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "redisIndex": {
+          "__rl": true,
+          "value": "rag_index",
+          "mode": "id"
+        },
+        "options": {
+          "overwriteDocuments": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreRedis",
+      "typeVersion": 1.3,
+      "position": [
+        1152,
+        1776
+      ],
+      "id": "0d3caa31-601c-4cf5-b4a6-fefac224c304",
+      "name": "Redis Vector Store",
+      "credentials": {
+        "redis": {
+          "id": "d34TnYdlfXwNojDp",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "=Use esta base de conhecimento para recuperar informações factuais, scripts estruturados e frases específicas usadas no atendimento da UP Designer.\nO documento está dividido em:\n\nPlanos, Preços, Benefícios e Links oficiais\nLocal: Tópico 1 do RAG\nRecupere: valores dos planos, diferenciação entre Bronze/Prata/Ouro, itens incluídos e links de pagamento.\n\nCredibilidade e Segurança\nLocal: Tópico 2 do RAG\nRecupere: histórico da UP Designer, provas sociais, segurança de pagamento e garantias.\n\nProcesso de Criação\nLocal: Tópico 3 do RAG\nRecupere: etapas, briefing, revisões, fluxo após a compra e forma de entrega.\n\nScripts de Vendas e Objeções (SPIN, BANT, MEDDIC, Challenger, Sandler, GAP Selling)\nLocal: Tópico 4 do RAG\nRecupere: perguntas de qualificação, implicação, valor, perguntas de urgência, respostas prontas para objeções e frases de impacto.\n\nCTAs (Chamadas para Ação)\nLocal: Tópico 5 do RAG\nRecupere: frases de fechamento, perguntas finais e convites para avançar.\n\nImportante:\n\nConsulte esta base de conhecimento apenas uma vez por pergunta do usuário. Utilize as informações recuperadas para formular sua resposta e não consulte novamente para a mesma solicitação.\nUse apenas para recuperar dados e frases exatas.\nNão utilize este RAG para comportamento, estilo de escrita ou tom. Isso é definido pelo system prompt.\nSempre priorize trechos mais específicos quando houver ambiguidade.",
+        "redisIndex": {
+          "__rl": true,
+          "value": "rag_index",
+          "mode": "list",
+          "cachedResultName": "rag_index"
+        },
+        "topK": 1,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreRedis",
+      "typeVersion": 1.3,
+      "position": [
+        2752,
+        1456
+      ],
+      "id": "5530fc58-118f-4845-bee9-af5265bcc2d2",
+      "name": "Redis Vector Store1",
+      "credentials": {
+        "redis": {
+          "id": "d34TnYdlfXwNojDp",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.from }}",
+        "sessionTTL": 60,
+        "contextWindowLength": 6
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        2752,
+        1264
+      ],
+      "id": "5b50d5c9-de8e-4b3e-ade3-c0254ef736a0",
+      "name": "Redis Chat Memory",
+      "credentials": {
+        "redis": {
+          "id": "d34TnYdlfXwNojDp",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_messages",
+          "mode": "list",
+          "cachedResultName": "chat_messages"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "rechamada": false,
+            "session_id": "={{ $('WhatsApp Trigger').first().json.contacts[0].wa_id }}",
+            "message": "=",
+            "sent_at": "={{ $now.toFormat('yyyy-MM-dd HH:mm:ss') }}",
+            "role": "user"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "role",
+              "displayName": "role",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sent_at",
+              "displayName": "sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "rechamada",
+              "displayName": "rechamada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4944,
+        1120
+      ],
+      "id": "596c13b2-77ad-4347-bc85-83e13664e744",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "zatnGnxMczro8wRm",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_messages",
+          "mode": "list",
+          "cachedResultName": "chat_messages"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "rechamada": false,
+            "session_id": "={{ $('WhatsApp Trigger').first().json.contacts[0].wa_id }}",
+            "message": "=",
+            "sent_at": "={{ $now.toFormat('yyyy-MM-dd HH:mm:ss') }}",
+            "role": "bot"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "role",
+              "displayName": "role",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sent_at",
+              "displayName": "sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "rechamada",
+              "displayName": "rechamada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        5360,
+        1120
+      ],
+      "id": "ee467af9-7fa0-4c1c-9495-1f92c1a96c54",
+      "name": "MESSAGE 1",
+      "credentials": {
+        "postgres": {
+          "id": "zatnGnxMczro8wRm",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 0.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        5168,
+        1120
+      ],
+      "id": "8e7d53ea-4047-4fb2-87e2-26339c863029",
+      "name": "Wait",
+      "webhookId": "3351e441-efc0-4a0d-b036-bd71aa589ed3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        4736,
+        1120
+      ],
+      "id": "de96b0ee-471e-4286-8d69-0e5195ad8d96",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "={{$('WhatsApp Trigger').first().json.messages[0].from}}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        5296,
+        1296
+      ],
+      "id": "e0282092-4c68-4f5b-ab04-58b196a2f5ec",
+      "name": "Redis",
+      "credentials": {
+        "redis": {
+          "id": "d34TnYdlfXwNojDp",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9fdffeb0-3baa-4801-80d3-4cf3bcc1fc31",
+              "leftValue": "={{ $json.resultado }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5104,
+        1312
+      ],
+      "id": "7ca8a869-4e96-44a7-8425-6331609563d0",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_messages",
+          "mode": "list",
+          "cachedResultName": "chat_messages"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "session_id",
+              "value": "={{$('WhatsApp Trigger').first().json.messages[0].from}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        5472,
+        1296
+      ],
+      "id": "6aec58f9-fdf2-413b-bcfd-ee6cf2c97516",
+      "name": "Delete table or rows",
+      "credentials": {
+        "postgres": {
+          "id": "zatnGnxMczro8wRm",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega a saída do Agente (que agora é {\"mensagens\": [\"msg1\", \"msg2\"]})\nconst output = $json.output || $json;\nconst result = [];\n\nif (output && Array.isArray(output.mensagens)) {\n  const mensagens = output.mensagens;\n\n  for (let i = 0; i < mensagens.length; i++) {\n    const msg = mensagens[i];\n    if (typeof msg === \"string\" && msg.trim() !== \"\") {\n      // Cria um item de saída para cada mensagem na lista\n      result.push({\n        json: {\n          type: \"text\",\n          text: {\n            body: msg.trim(),\n          },\n          order: i + 1,\n        },\n      });\n    }\n  }\n}\n\n// Se der erro ou a IA não retornar nada, envia uma msg padrão\nif (result.length === 0) {\n  return [\n    {\n      json: {\n        type: \"text\",\n        text: {\n          body: \"Não entendi, pode repetir?\",\n        },\n        order: 1,\n      },\n    },\n  ];\n}\n\nreturn result;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3056,
+        1072
+      ],
+      "id": "1bd24815-320f-46c2-9404-b83c828d3348",
+      "name": "Processar Saída do Agente"
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $('AI Agent2').first().json.output || $json;\nconst result = [];\n\nconst mensagens = [\"mensagem\", \"micro_cta\"];\n\nfor (let i = 0; i < mensagens.length; i++) {\n  const key = mensagens[i];\n  const msg = output[key];\n\n  if (typeof msg === \"string\" && msg.trim() !== \"\") {\n    result.push({\n      json: {\n        conteudo: msg.trim(),\n        type: \"message\",\n        numero: String(i + 1),\n        order: i + 1,\n      },\n    });\n  } else if (msg && typeof msg.conteudo === \"string\" && msg.conteudo.trim() !== \"\") {\n    result.push({\n      json: {\n        ...msg,\n        order: i + 1,\n      },\n    });\n  }\n}\n\nreturn result.length > 0 ? result : [{ json: { error: \"Nenhuma mensagem válida encontrada.\" } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4512,
+        1072
+      ],
+      "id": "54a1f177-fdd9-4858-a217-ba16958f0514",
+      "name": "Preparar Mensagens para Loop"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst links = [\n  \"https://pay.cakto.com.br/yprdmik_624343\",\n  \"https://pay.cakto.com.br/3bhwur2_624356\",\n  \"https://pay.cakto.com.br/37qb9pb_624361\"\n];\n\nlet resultado = false;\n\nfor (let i = 0; i < items.length; i++) {\n  const type = items[i].json.type || '';\n  const conteudo = items[i].json.conteudo || '';\n  if (\n    type === \"message\" &&\n    links.some(link => conteudo.includes(link))\n  ) {\n    resultado = true;\n    break;\n  }\n}\n\nreturn [{ json: { resultado } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4944,
+        1312
+      ],
+      "id": "dba9e551-f366-4f98-808e-b696dc22fb3a",
+      "name": "Detectar Links Pagamento"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3296,
+        1072
+      ],
+      "id": "432a6aa9-622b-4fda-b535-c1ec7e52659d",
+      "name": "Wait1",
+      "webhookId": "82b15df0-e35d-4ffc-b6ee-6884ef032af2"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"mensagens\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" },\n      \"minItems\": 1,\n      \"maxItems\": 2,\n      \"description\": \"Uma lista de 1 ou 2 strings de mensagem. A primeira é a resposta principal. A segunda (se houver) é o micro-CTA. A última mensagem na lista DEVE ser sempre uma pergunta/CTA.\"\n    }\n  },\n  \"required\": [\"mensagens\"],\n  \"additionalProperties\": false\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        3008,
+        1280
+      ],
+      "id": "ea0e41bd-b188-41e7-82c7-1814d82a8ba0",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        3056,
+        1440
+      ],
+      "id": "183c8655-0571-46f9-b284-13b7613d6319",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "byfSf2daIyjWaYdm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## ATUALIZAR MEMÓRIA DO BANCO VETORIAL COM DOCUMENTO RAG",
+        "height": 512,
+        "width": 1152,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        560,
+        1696
+      ],
+      "typeVersion": 1,
+      "id": "2e8e99c7-edf3-4317-9cfe-e9f946ec3fea",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "38aec976-a32c-4b0e-85f4-c90adc16abc9",
+              "name": "text",
+              "type": "string",
+              "value": "={{ $json.text }}"
+            },
+            {
+              "id": "5ae33a41-fdb6-42ba-a4df-6714a70e7073",
+              "name": "from",
+              "value": "={{ $('Route Types').item.json.messages[0].from }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "42b3a1a6-4026-496c-b14f-7dd463732ac9",
+      "name": "Map text prompt (audio)",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        2208,
+        1104
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {
+          "messageStatusUpdates": [
+            "all"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        672,
+        944
+      ],
+      "id": "e8ebfaf8-3b49-4ef0-9163-95a806a4e498",
+      "name": "WhatsApp Trigger",
+      "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "Lv9lqv3eZUrMAbxC",
+          "name": "credencial-daniel"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        3616,
+        1072
+      ],
+      "id": "536f58f1-a877-4bde-a4c3-1685a5a7dadc",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ed295660-0139-4f86-b346-7c8170bb67dd",
+              "name": "text.body",
+              "value": "={{ $('Wait1').item.json.text.body }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3856,
+        1168
+      ],
+      "id": "f69ff815-1edd-43f9-a5cf-29484e88015a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {
+          "messageStatusUpdates": [
+            "all"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        672,
+        1408
+      ],
+      "id": "d9050076-4a1d-4104-bce4-293e2bd7f0ef",
+      "name": "WhatsApp Trigger2",
+      "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "XFaHAecnNzwuu4tj",
+          "name": "patrick-credencial"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {
+          "messageStatusUpdates": [
+            "all"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        672,
+        1552
+      ],
+      "id": "e719d4cf-cc30-4648-85f6-ee0b7547dd3f",
+      "name": "WhatsApp Trigger3",
+      "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "XFaHAecnNzwuu4tj",
+          "name": "patrick-credencial"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {
+          "messageStatusUpdates": [
+            "all"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        656,
+        1120
+      ],
+      "id": "27b298a6-1ee2-4dd2-9191-a64bfb69fcf3",
+      "name": "WhatsApp Trigger1",
+      "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "XFaHAecnNzwuu4tj",
+          "name": "patrick-credencial"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2736,
+        1600
+      ],
+      "id": "d92c1418-2060-4478-92e1-67b8e9456fbe",
+      "name": "Embeddings OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "byfSf2daIyjWaYdm",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "WhatsApp Trigger": [
+      {
+        "json": {
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "15551791204",
+            "phone_number_id": "740050119202275"
+          },
+          "contacts": [
+            {
+              "profile": {
+                "name": "Daniel Alvarez"
+              },
+              "wa_id": "5521969547552"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5521969547552",
+              "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYFjNFQjA3NDlBQ0JEQUYzNERERDJCQTEA",
+              "timestamp": "1763648144",
+              "type": "audio",
+              "audio": {
+                "mime_type": "audio/ogg; codecs=opus",
+                "sha256": "uM6bssrQq+Ff2gFoMWxH6lqHqfEATP0c1VmnI3mY/K8=",
+                "id": "1330983264905395",
+                "voice": false
+              }
+            }
+          ],
+          "field": "messages"
+        }
+      }
+    ],
+    "WhatsApp Trigger2": [
+      {
+        "json": {
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "15551791204",
+            "phone_number_id": "740050119202275"
+          },
+          "contacts": [
+            {
+              "profile": {
+                "name": "Daniel Alvarez"
+              },
+              "wa_id": "5521969547552"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5521969547552",
+              "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYFjNFQjBEMkMxQ0E1QUU3QjJGRjU3NEQA",
+              "timestamp": "1763653641",
+              "type": "image",
+              "image": {
+                "mime_type": "image/jpeg",
+                "sha256": "4L1Y1z0UYwCqnKmkYRcMwvednuRa+E0s/EG95QZqBbs=",
+                "id": "812973104829074"
+              }
+            }
+          ],
+          "field": "messages"
+        }
+      }
+    ],
+    "WhatsApp Trigger3": [
+      {
+        "json": {
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "15551791204",
+            "phone_number_id": "740050119202275"
+          },
+          "contacts": [
+            {
+              "profile": {
+                "name": "Daniel Alvarez"
+              },
+              "wa_id": "5521969547552"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5521969547552",
+              "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYFjNFQjA1OTM4NzQ0RkVERDk3NkJBNEMA",
+              "timestamp": "1763653709",
+              "type": "document",
+              "document": {
+                "filename": "CATALAGO UP DESIGNER.pdf",
+                "mime_type": "application/pdf",
+                "sha256": "Ud8IqBZRIA6v2ftFwZYJyd30uklUmbXVot0uwPdc5kg=",
+                "id": "1150602070490685"
+              }
+            }
+          ],
+          "field": "messages"
+        }
+      }
+    ],
+    "WhatsApp Trigger1": [
+      {
+        "json": {
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "15551791204",
+            "phone_number_id": "740050119202275"
+          },
+          "contacts": [
+            {
+              "profile": {
+                "name": "Daniel Alvarez"
+              },
+              "wa_id": "5521969547552"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5521969547552",
+              "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYFjNFQjA4RUE4M0YzMkNCNTlDQzY2QkEA",
+              "timestamp": "1762519850",
+              "text": {
+                "body": "olá, quero mais informações"
+              },
+              "type": "text"
+            }
+          ],
+          "field": "messages"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Map text prompt (audio)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Map image prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Types": {
+      "main": [
+        [
+          {
+            "node": "Map text prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gets WhatsApp Voicemail Source URL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gets WhatsApp Image Source URL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gets WhatsApp Document Source URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map text prompt": {
+      "main": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Document Chunker": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Document Section Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from PDF": {
+      "main": [
+        [
+          {
+            "node": "Map document prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map image prompt": {
+      "main": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Document": {
+      "main": [
+        [
+          {
+            "node": "Map file extensions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Redis Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Voicemail": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map document prompt": {
+      "main": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map file extensions": {
+      "main": [
+        [
+          {
+            "node": "Route Document Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs Importer": {
+      "main": [
+        [
+          {
+            "node": "Redis Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Knowledge Base Agent": {
+      "main": [
+        [
+          {
+            "node": "Processar Saída do Agente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Document Types": {
+      "main": [
+        [
+          {
+            "node": "Map document prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Unsupported Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Document Section Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Redis Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Unsupported Response": {
+      "main": [
+        []
+      ]
+    },
+    "Gets WhatsApp Image Source URL": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Google Docs Importer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gets WhatsApp Document Source URL": {
+      "main": [
+        [
+          {
+            "node": "Download Document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gets WhatsApp Voicemail Source URL": {
+      "main": [
+        [
+          {
+            "node": "Download Voicemail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "MESSAGE 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Detectar Links Pagamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis": {
+      "main": [
+        [
+          {
+            "node": "Delete table or rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Processar Saída do Agente": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Mensagens para Loop": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detectar Links Pagamento": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Response": {
+      "main": [
+        [
+          {
+            "node": "Preparar Mensagens para Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map text prompt (audio)": {
+      "main": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "Route Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Trigger2": {
+      "main": [
+        [
+          {
+            "node": "Route Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Trigger3": {
+      "main": [
+        [
+          {
+            "node": "Route Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Route Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Redis Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "92c4378b-d9f6-455f-a6a0-fced58c7d07d",
+  "meta": {
+    "templateId": "4827",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f68a9a73963c9909b94c9b4d1663147c9d99da766fa23b233f344186361e4ebb"
+  },
+  "id": "oRRPmPg1J9H2XNW1",
+  "tags": []
+}

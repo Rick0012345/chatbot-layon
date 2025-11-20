@@ -1,0 +1,1248 @@
+{
+  "name": "AI-Powered WhatsApp Chatbot for Text, Voice, Images, and PDF with RAG",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Você é Layon, um atendente humano da UP Designer. Sua função é conduzir o cliente até a compra de um dos planos (Bronze, Prata ou Ouro). Use o documento RAG como referência, seguindo a estrutura abaixo:\n\nTópico 1 – Planos, benefícios e preços: use este tópico para explicar os planos Bronze, Prata e Ouro, seus valores, o que cada um oferece e para quem cada plano é ideal.\n\nTópico 2 – Credibilidade e segurança: utilize este tópico para reforçar confiança quando necessário, mencionando histórico, reputação, garantias, segurança e suporte da UP Designer.\n\nTópico 3 – Processo de criação: use este tópico para explicar como funciona o processo após a contratação: briefing, etapas, prazo, revisões e entregas.\n\nTópico 4 – Vendas e objeções: utilize este tópico para lidar com objeções comuns (preço, dúvida, urgência, necessidade). Reforce valor com empatia e clareza.\n\nTópico 5 – CTAs: use este tópico para sempre finalizar suas mensagens com uma chamada para ação, conduzindo o cliente naturalmente para escolher um plano ou finalizar a compra.\nExceção: se estiver enviando links de pagamento, não precisa colocar CTA depois.\n\nMantenha sempre um tom humano, amigável, acolhedor, confiável e profissional.\nSeu objetivo final é guiar o cliente até o plano mais adequado e enviar o link correto no momento certo."
+        }
+      },
+      "id": "d1b47f60-5a4d-4629-a18d-b3c6ec0c972c",
+      "name": "Knowledge Base Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        2704,
+        1264
+      ],
+      "typeVersion": 1.9
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {
+          "temperature": 0.6
+        }
+      },
+      "id": "c36731ce-5086-4a2f-8c3a-63be150fb8ae",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        2640,
+        1552
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "byfSf2daIyjWaYdm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "53c2496a-0737-452c-b49c-ca0afa9c0073",
+      "name": "Embeddings OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "position": [
+        2768,
+        1744
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "byfSf2daIyjWaYdm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "54697b14-28a0-4572-b17e-328a7b52cc90",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        3088,
+        1488
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.content }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "doc_id",
+                "value": "={{ $json.documentId }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "8cf54cb6-7247-4036-b1e4-9a28650d700a",
+      "name": "Document Section Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "position": [
+        3664,
+        1648
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chunkSize": 3000,
+        "chunkOverlap": 200,
+        "options": {
+          "splitCode": "markdown"
+        }
+      },
+      "id": "4e93e3c3-1847-483a-b6a7-67ff2cff294f",
+      "name": "Document Chunker",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "position": [
+        3632,
+        1792
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1qQd97TkWRM8PqMqetU4vBxsKgopwHbEZq73M2O0GFKA/edit?tab=t.0"
+      },
+      "id": "a9368d23-e35f-4986-8060-30a05f3f9c05",
+      "name": "Google Docs Importer",
+      "type": "n8n-nodes-base.googleDocs",
+      "position": [
+        3312,
+        1488
+      ],
+      "typeVersion": 2,
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "dyXOpqoFvilC0tGb",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Run this workflow manually to import and index Google Docs product documentation into MongoDB with vector embeddings for fast search.",
+        "color": 5
+      },
+      "id": "1fb0f8a3-9113-4185-a935-0fc327f70881",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "This workflow listens for WhatsApp messages (text, audio, image, documents), converts them into embeddings, searches MongoDB, and uses GPT-4o-mini to provide context-aware answers with conversation memory.",
+        "height": 280,
+        "color": 4
+      },
+      "id": "62e13275-6f92-4799-9cbe-e0064ceb5140",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        1184
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Search Index Example \n\n{\n  \"mappings\": {\n    \"dynamic\": false,\n    \"fields\": {\n      \"_id\": {\n        \"type\": \"string\"\n      },\n      \"text\": {\n        \"type\": \"string\"\n      },\n      \"embedding\": {\n        \"type\": \"knnVector\",\n        \"dimensions\": 1536,\n        \"similarity\": \"cosine\"\n      },\n      \"source\": {\n        \"type\": \"string\"\n      },\n      \"doc_id\": {\n        \"type\": \"string\"\n      }\n    }\n  }\n}\n",
+        "height": 540
+      },
+      "id": "d21fc408-f66d-4b07-972a-811aa420b4ce",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1600,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "translate",
+        "options": {}
+      },
+      "id": "8842d0c7-082e-4b4e-b350-a8bb8f47c390",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        1840,
+        1072
+      ],
+      "typeVersion": 1.8,
+      "credentials": {
+        "openAiApi": {
+          "id": "byfSf2daIyjWaYdm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "inputType": "base64",
+        "options": {
+          "detail": "auto"
+        }
+      },
+      "id": "a342dc14-0ffe-41ba-a3e9-853fe043f4fb",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        1840,
+        1248
+      ],
+      "typeVersion": 1.8,
+      "credentials": {
+        "openAiApi": {
+          "id": "byfSf2daIyjWaYdm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "id": "b1220587-fadf-4b5b-944e-b6e60b64c141",
+      "name": "Extract from PDF",
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        2240,
+        1472
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "let requests = $(\"Download Document\").all()\n\nrequests.forEach((request) => {\n  let mime_type = request.json.mime_type\n\n  if (\n    mime_type === \"text/calendar\" || \n    mime_type === \"application/ics\" || \n    mime_type === \"text/x-calendar\"\n  ) {\n    request.json.mime_type = \"mapped/calendar\"\n  }\n\n  if (\n    mime_type === \"application/xml\" || \n    mime_type === \"text/xml\") {\n    request.json.mime_type = \"mapped/xml\"\n  }\n\n  if (!mime_type) {\n    request.json.mime_type = $('Gets WhatsApp Document Source URL').first().json.mime_type\n  }\n})\n\nreturn requests;"
+      },
+      "id": "a0920bc7-71bd-4803-bbce-4cef14cac5ee",
+      "name": "Map file extensions",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1840,
+        1456
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "da68bcca-a2a6-4676-8649-6fb1b664e44c",
+              "name": "text",
+              "type": "string",
+              "value": "=Parsed text: {{ $json.text || $json.data || $json }}\n\nCaption text: {{ $('Route Types').item.json.messages[0].document.caption }}\n\nMimeType: {{ $('Gets WhatsApp Document Source URL').item.json.mime_type }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "77302aa3-6e87-4de6-9ec7-387ddb76fc84",
+      "name": "Map document prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        2432,
+        1328
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "48af2dcc-4ce9-45fc-abfc-54f803930092",
+              "name": "text",
+              "type": "string",
+              "value": "=User image description: {{ $json.content }}\n\nUser image caption: {{ $('Route Types').item.json.messages[0].image.caption }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "90821e49-c98d-4617-8289-1be6d3aeb087",
+      "name": "Map image prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        2048,
+        1248
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "38aec976-a32c-4b0e-85f4-c90adc16abc9",
+              "name": "text",
+              "type": "string",
+              "value": "={{ $json.messages[0].text.body }}"
+            },
+            {
+              "id": "5ae33a41-fdb6-42ba-a4df-6714a70e7073",
+              "name": "from",
+              "value": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cf603f5c-0a6e-4cdd-846b-738ed417daa2",
+      "name": "Map text prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1376,
+        912
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.messages[0].audio.id}}"
+      },
+      "id": "7727e89d-cf21-4440-ab7f-85594eb1ec44",
+      "name": "Gets WhatsApp Voicemail Source URL",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        1392,
+        1072
+      ],
+      "webhookId": "bbe62f3d-8788-49d4-aae6-9e9411446d44",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "UA7fntD6z61qwrjb",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.messages[0].image.id }}"
+      },
+      "id": "08b938a1-d32e-4aa1-958f-bdabd3dfec13",
+      "name": "Gets WhatsApp Image Source URL",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        1392,
+        1248
+      ],
+      "webhookId": "c2982df4-1d8d-4669-a724-44ae17d11e6c",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "pf6cHD4rVJcQYya1",
+          "name": "patrick-account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.messages[0].document.id }}"
+      },
+      "id": "d934ce80-cdb0-476d-8896-b8c226086933",
+      "name": "Gets WhatsApp Document Source URL",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        1392,
+        1456
+      ],
+      "webhookId": "c2982df4-1d8d-4669-a724-44ae17d11e6c",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "UA7fntD6z61qwrjb",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "aad1b221-0985-43e7-bc0b-312436171abe",
+      "name": "Download Voicemail",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1616,
+        1072
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "ibUTDZJclFOcZlxe",
+          "name": "Unnamed credential"
+        },
+        "httpHeaderAuth": {
+          "id": "hNBsndCQzaeTiGig",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "dfd08bec-9d30-4125-b167-7feaeefd7afa",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1616,
+        1248
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "hNBsndCQzaeTiGig",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "id": "ba3d221f-ce5c-4105-82cf-fbd11c2c0e2f",
+      "name": "Download Document",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1616,
+        1456
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "hNBsndCQzaeTiGig",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "2fc5c912-629b-4cbe-b5e3-7e3f0651c628",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "text"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "26a3d85c-0815-48ff-85ce-713129a1107c",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "audio"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "840b95b8-6559-4fb7-b32c-651451d6d0d2",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "image"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "3e7a07f9-b785-450c-8c68-f6b276838503",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "document"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Document"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "87ecc44f-cc1f-47e0-b995-079230be118d",
+      "name": "Route Types",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        976,
+        1200
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "64dd4658-54e7-4453-adbc-7067dffcd555",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": "text/plain"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "TXT"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "88b618fd-9a88-491e-91dd-c5fc9efa36e3",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": "application/pdf"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "PDF"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "ea3be820-2ead-4ec2-b292-42d3c7804b55",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": ""
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "ELSE"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ce3d08ce-4445-4473-90b2-227ba065c4d8",
+      "name": "Route Document Types",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        2048,
+        1440
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "677680658761861",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "=The File type you provided is unsupported.",
+        "additionalFields": {}
+      },
+      "id": "18684032-23ec-4e10-88f4-e93363432a67",
+      "name": "Send Unsupported Response",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        2240,
+        1648
+      ],
+      "webhookId": "017d267f-4897-4726-bf03-304ef10352bf",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "UA7fntD6z61qwrjb",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "677680658761861",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "id": "acc8e4ae-0610-42fc-a318-b9a23a38919b",
+      "name": "Send Response",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        3040,
+        1264
+      ],
+      "webhookId": "23834751-5066-48ba-8e19-549680df2b27",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "UA7fntD6z61qwrjb",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "redisIndex": {
+          "__rl": true,
+          "value": "rag_index",
+          "mode": "list",
+          "cachedResultName": "rag_index"
+        },
+        "options": {
+          "overwriteDocuments": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreRedis",
+      "typeVersion": 1.3,
+      "position": [
+        3520,
+        1488
+      ],
+      "id": "0d3caa31-601c-4cf5-b4a6-fefac224c304",
+      "name": "Redis Vector Store",
+      "credentials": {
+        "redis": {
+          "id": "d34TnYdlfXwNojDp",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Ferramenta OBRIGATÓRIA para consultar a base de conhecimento (RAG) da Up Designer. Use-a para recuperar informações FAKTUEL e SCRIPTS PRONTOS que a persona \"Layon Maia\" deve usar.\n\nConsultar esta ferramenta para:\n* **Preços e Pacotes:** Buscar valores, descrições (pitch) e links de pagamento dos planos Bronze, Prata e Ouro.\n* **Scripts de Objeções:** Encontrar a resposta exata para objeções do cliente (ex: \"quanto custa?\", \"é caro\", \"preciso pensar\", \"é seguro?\").\n* **Perguntas de Qualificação:** Obter as perguntas específicas (SPIN/BANT) para fazer ao cliente (ex: \"Como está sua presença digital?\", \"O que mais te preocupa?\").\n* **Micro-CTAs (Chamadas para Ação):** Buscar as frases exatas para terminar uma mensagem e pedir o próximo passo (ex: \"Faz sentido pra você?\", \"Posso enviar o link seguro?\").\n\n**NÃO USAR PARA:** Buscar regras de personalidade ou tom de voz (ex: \"Seja humano\", \"Use frases curtas\"). Esta ferramenta é apenas para buscar DADOS e SCRIPTS.",
+        "redisIndex": {
+          "__rl": true,
+          "value": "rag_index",
+          "mode": "list",
+          "cachedResultName": "rag_index"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreRedis",
+      "typeVersion": 1.3,
+      "position": [
+        2768,
+        1568
+      ],
+      "id": "5530fc58-118f-4845-bee9-af5265bcc2d2",
+      "name": "Redis Vector Store1",
+      "credentials": {
+        "redis": {
+          "id": "d34TnYdlfXwNojDp",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.from }}",
+        "sessionTTL": 360,
+        "contextWindowLength": 15
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        2784,
+        1440
+      ],
+      "id": "5b50d5c9-de8e-4b3e-ade3-c0254ef736a0",
+      "name": "Redis Chat Memory",
+      "credentials": {
+        "redis": {
+          "id": "d34TnYdlfXwNojDp",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {
+          "messageStatusUpdates": [
+            "all"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        720,
+        1232
+      ],
+      "id": "27b298a6-1ee2-4dd2-9191-a64bfb69fcf3",
+      "name": "WhatsApp Trigger",
+      "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "Lv9lqv3eZUrMAbxC",
+          "name": "credencial-daniel"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        3568,
+        1696
+      ],
+      "id": "7cbf8772-6dc1-4cd7-a7f9-51bc40870543",
+      "name": "Embeddings OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "byfSf2daIyjWaYdm",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2880,
+        1472
+      ],
+      "id": "8d7be562-179a-4d06-81de-1214ede3c3f6",
+      "name": "Structured Output Parser"
+    }
+  ],
+  "pinData": {
+    "WhatsApp Trigger": [
+      {
+        "json": {
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "15551791204",
+            "phone_number_id": "740050119202275"
+          },
+          "contacts": [
+            {
+              "profile": {
+                "name": "Daniel Alvarez"
+              },
+              "wa_id": "5521969547552"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5521969547552",
+              "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYFjNFQjA4RUE4M0YzMkNCNTlDQzY2QkEA",
+              "timestamp": "1762519850",
+              "text": {
+                "body": "quero saber sobre os preços"
+              },
+              "type": "text"
+            }
+          ],
+          "field": "messages"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Map image prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Types": {
+      "main": [
+        [
+          {
+            "node": "Map text prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gets WhatsApp Voicemail Source URL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gets WhatsApp Image Source URL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gets WhatsApp Document Source URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map text prompt": {
+      "main": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Document Chunker": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Document Section Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from PDF": {
+      "main": [
+        [
+          {
+            "node": "Map document prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map image prompt": {
+      "main": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Document": {
+      "main": [
+        [
+          {
+            "node": "Map file extensions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Redis Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Voicemail": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map document prompt": {
+      "main": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map file extensions": {
+      "main": [
+        [
+          {
+            "node": "Route Document Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs Importer": {
+      "main": [
+        [
+          {
+            "node": "Redis Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Knowledge Base Agent": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Document Types": {
+      "main": [
+        [
+          {
+            "node": "Map document prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Unsupported Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Document Section Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Redis Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Unsupported Response": {
+      "main": [
+        []
+      ]
+    },
+    "Gets WhatsApp Image Source URL": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Google Docs Importer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gets WhatsApp Document Source URL": {
+      "main": [
+        [
+          {
+            "node": "Download Document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gets WhatsApp Voicemail Source URL": {
+      "main": [
+        [
+          {
+            "node": "Download Voicemail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "Route Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Redis Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "9b8b073c-e0ef-4ea1-aab9-ddb5a7425c22",
+  "meta": {
+    "templateId": "4827",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f68a9a73963c9909b94c9b4d1663147c9d99da766fa23b233f344186361e4ebb"
+  },
+  "id": "oRRPmPg1J9H2XNW1",
+  "tags": []
+}

@@ -14,6 +14,7 @@ services:
       - N8N_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMjEyMjMyMi1lNGU1LTQyMzItOWI5Mi1lMDQxMWEzYmFiMmMiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYwODg3MjIwLCJleHAiOjE3NjM0MzQ4MDB9.3RBTfRL7QMXSRwpqqPz8lpVCoKuqUHw4Z_y3sN78aac
       - N8N_PUBLIC_API_DISABLED=false
       - N8N_PUBLIC_API_ENDPOINT=api
+      - MONGODB_URI=mongodb://n8n:n8n123@chatbot-layon-mongodb:27017/?authSource=admin
     volumes:
       - chatbot_layon_n8n_data:/home/node/.n8n
       # Monta a pasta local com os documentos para dentro do container
@@ -63,10 +64,25 @@ services:
       - chatbot_layon_redis_data:/data
     networks:
       - lanchonete-network
+
+  mongodb:
+    image: mongo:7.0
+    container_name: chatbot-layon-mongodb
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=n8n
+      - MONGO_INITDB_ROOT_PASSWORD=n8n123
+    ports:
+      - "27017:27017"
+    volumes:
+      - chatbot_layon_mongodb_data:/data/db
+    networks:
+      - lanchonete-network
 volumes:
   chatbot_layon_n8n_data:
   chatbot_layon_postgres_data:
   chatbot_layon_redis_data:
+  chatbot_layon_mongodb_data:
 
 networks:
   lanchonete-network:
