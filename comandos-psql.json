@@ -1,0 +1,58 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE chat_messages (\n    id SERIAL PRIMARY KEY,                -- Identificador único da mensagem\n    session_id UUID NOT NULL,             -- Identifica a conversa do usuário (ex: wa_id do WhatsApp)\n    role VARCHAR(10) NOT NULL,            -- 'user' para usuário, 'bot' para mensagens do bot\n    message TEXT NOT NULL,                -- Conteúdo da mensagem\n    sent_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), -- Data/hora de envio da mensagem\n    rechamada BOOLEAN DEFAULT FALSE       -- Indica se já foi feito o follow-up (rechamada)\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -176,
+        48
+      ],
+      "id": "6bd876a4-58bc-4d2a-89b8-57a379de873b",
+      "name": "CRIAR TABELAS",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "ALTER TABLE chat_messages\nALTER COLUMN session_id TYPE VARCHAR(30);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -352,
+        48
+      ],
+      "id": "89b83c31-ed8b-4b54-ba8f-65cff32a3d75",
+      "name": "ALTER TABLE PARA CORRIGIR TIPO DE COLUNA",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM chat_messages;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -32,
+        48
+      ],
+      "id": "b983e550-ceed-4c2d-8c24-27cab5a90283",
+      "name": "DELETE TUDO",
+      "disabled": true
+    }
+  ],
+  "connections": {},
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f68a9a73963c9909b94c9b4d1663147c9d99da766fa23b233f344186361e4ebb"
+  }
+}

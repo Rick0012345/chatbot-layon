@@ -1,5 +1,4 @@
 {
-  "name": "AI-Powered WhatsApp Chatbot for Text, Voice, Images, and PDF with RAG",
   "nodes": [
     {
       "parameters": {
@@ -7,15 +6,16 @@
         "text": "={{ $json.text }}",
         "hasOutputParser": true,
         "options": {
-          "systemMessage": "=Você é Layon, atendente humano da UP Designer. Seu objetivo é conduzir o cliente até a compra de um dos planos (Bronze, Prata ou Ouro) usando perguntas inteligentes, diagnóstico rápido e técnicas das principais escolas de vendas (SPIN, BANT, MEDDIC, Challenger, Sandler e GAP Selling).\n\nUse o documento RAG como base de conhecimento:\n\nRegras de consulta ao RAG:\n\nPara cada pergunta do cliente, consulte a knowledge_base do vector store (RAG)\nUtilize apenas as informações factuais recuperadas do RAG para responder sobre planos, benefícios, preços, links, credibilidade, processo, scripts, objeções e CTAs.\n\n\nregras obrigatórias do conteúdo:\n\nEntenda o cliente com perguntas de diagnóstico (SPIN / BANT / MEDDIC / GAP).\nIdentifique dores, implicações e urgência.\nEnsine e traga insights quando fizer sentido (Challenger).\nReforce autoridade e segurança (Credibilidade).\nApresente o plano ideal com pitch curto e objetivo.\nUse CTAs leves ao final da mensagem, sempre terminando com uma pergunta.\nRegras gerais:\n\nSeja claro e direto.\nUse linguagem natural e humana.\nSempre feche com uma CTA do documento.\nQuando falar de valores, use apenas os do RAG.\nApenas recupere informações factuais do RAG; estilo e comportamento vêm deste system prompt."
+          "systemMessage": "=Você é Layon, consultor de vendas sênior da UP Designer.\nSua missão: Aplicar o Método Vendedor-Consultivo com alta energia e empatia. Seu objetivo é fechar a venda do plano ideal (Bronze, Prata ou Ouro) após um diagnóstico rápido.\n\n🎯 FLUXO DE VENDAS (PRIORIDADE):\n1. SAUDAÇÃO E CONEXÃO:\n   - Para o primeiro contato (\"Quero um logo\", \"Oi\"): Responda com entusiasmo e crie credibilidade imediatamente. Use emojis moderados para soar humano.\n   - Sua primeira mensagem deve ser: \"Opa, que demais! É um prazer ajudar você a construir sua marca. Fazemos isso desde 2003 e somos referência no mercado! 🚀\"\n2. SONDAGEM E DIAGNÓSTICO:\n   - Sua segunda mensagem DEVE ser a pergunta de diagnóstico. NUNCA ofereça plano antes disso.\n   - A pergunta deve focar no *resultado* que o cliente espera.\n   - Pergunta Guia: \"Me conta: Qual é o ramo principal da sua empresa e qual é o *resultado* exato que você quer ver com essa nova logo (mais autoridade, mais vendas no Instagram, mais confiança)?\"\n3. OFERTA:\n   - Somente depois de receber o ramo e o resultado, use a base de conhecimento para oferecer o **Plano Prata**. Conecte o plano ao nicho e ao resultado.\n\n🎧 CORREÇÃO DE ÁUDIO:\n- Use o contexto. Entenda \"alugo\" como \"Logo\" e \"intuição\" como \"Atuação\".\n\n🛡️ PROTOCOLO TÉCNICO (Mantenha a estabilidade do fluxo):\n- LINKS: Proibido inventar URLs. Você DEVE consultar a 'Redis Vector Store' para obter o link exato (https://...).\n- FORMATO: Você DEVE usar a ferramenta 'format_final_json_response' para entregar a resposta. JAMAIS texto solto.\n- MENSAGENS: Use o limite de Máximo 2 mensagens curtas.",
+          "maxIterations": 3
         }
       },
-      "id": "d1b47f60-5a4d-4629-a18d-b3c6ec0c972c",
+      "id": "91e78f22-0191-49b3-bf34-9b969ebf83e8",
       "name": "Knowledge Base Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        2640,
-        1040
+        2864,
+        736
       ],
       "typeVersion": 1.9,
       "retryOnFail": false,
@@ -32,17 +32,17 @@
           "temperature": 0.4
         }
       },
-      "id": "c36731ce-5086-4a2f-8c3a-63be150fb8ae",
+      "id": "8ad5ba6d-690e-4acc-bbc3-9c0866d5a83c",
       "name": "OpenAI Chat Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        2576,
-        1264
+        2800,
+        960
       ],
       "typeVersion": 1.2,
       "credentials": {
         "openAiApi": {
-          "id": "byfSf2daIyjWaYdm",
+          "id": "3S3EpYCFWBw8IXUH",
           "name": "OpenAi account"
         }
       }
@@ -51,29 +51,29 @@
       "parameters": {
         "options": {}
       },
-      "id": "53c2496a-0737-452c-b49c-ca0afa9c0073",
+      "id": "579f2a0e-36ef-41e3-8747-6da848f3e74a",
       "name": "Embeddings OpenAI",
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "position": [
-        1552,
-        1984
+        1392,
+        1680
       ],
       "typeVersion": 1.2,
       "credentials": {
         "openAiApi": {
-          "id": "byfSf2daIyjWaYdm",
+          "id": "3S3EpYCFWBw8IXUH",
           "name": "OpenAi account"
         }
       }
     },
     {
       "parameters": {},
-      "id": "54697b14-28a0-4572-b17e-328a7b52cc90",
+      "id": "0d9bf686-f1dd-4fe6-8fa3-b223677000c4",
       "name": "When clicking \"Execute Workflow\"",
       "type": "n8n-nodes-base.manualTrigger",
       "position": [
-        720,
-        1776
+        560,
+        1472
       ],
       "typeVersion": 1
     },
@@ -92,12 +92,12 @@
           }
         }
       },
-      "id": "8cf54cb6-7247-4036-b1e4-9a28650d700a",
+      "id": "3b1595ad-8f94-4445-867f-32c5cb8d503e",
       "name": "Document Section Loader",
       "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
       "position": [
-        944,
-        1952
+        784,
+        1648
       ],
       "typeVersion": 1
     },
@@ -109,31 +109,31 @@
           "splitCode": "markdown"
         }
       },
-      "id": "4e93e3c3-1847-483a-b6a7-67ff2cff294f",
+      "id": "30460418-083c-40dd-bd81-b1f7926a55b3",
       "name": "Document Chunker",
       "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
       "position": [
-        896,
-        2080
+        736,
+        1776
       ],
       "typeVersion": 1
     },
     {
       "parameters": {
         "operation": "get",
-        "documentURL": "https://docs.google.com/document/d/1qQd97TkWRM8PqMqetU4vBxsKgopwHbEZq73M2O0GFKA/edit?tab=t.0"
+        "documentURL": "https://docs.google.com/document/d/1SymjSl9JFpu40RDMLO4RIeedSjl-aURnRq9jyiqzAh4/edit?tab=t.0"
       },
-      "id": "a9368d23-e35f-4986-8060-30a05f3f9c05",
+      "id": "0a0d40f4-c062-4439-ad43-f7c2b9c81aa1",
       "name": "Google Docs Importer",
       "type": "n8n-nodes-base.googleDocs",
       "position": [
-        944,
-        1776
+        784,
+        1472
       ],
       "typeVersion": 2,
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "dyXOpqoFvilC0tGb",
+          "id": "cF7lXyuldbfdtoUN",
           "name": "Google Docs account"
         }
       }
@@ -143,12 +143,12 @@
         "content": "Run this workflow manually to import and index Google Docs product documentation into MongoDB with vector embeddings for fast search.",
         "color": 5
       },
-      "id": "1fb0f8a3-9113-4185-a935-0fc327f70881",
+      "id": "ecae6196-bdfb-4819-a689-b06678904f85",
       "name": "Sticky Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        368,
-        256
+        208,
+        -48
       ],
       "typeVersion": 1
     },
@@ -157,12 +157,12 @@
         "content": "Search Index Example \n\n{\n  \"mappings\": {\n    \"dynamic\": false,\n    \"fields\": {\n      \"_id\": {\n        \"type\": \"string\"\n      },\n      \"text\": {\n        \"type\": \"string\"\n      },\n      \"embedding\": {\n        \"type\": \"knnVector\",\n        \"dimensions\": 1536,\n        \"similarity\": \"cosine\"\n      },\n      \"source\": {\n        \"type\": \"string\"\n      },\n      \"doc_id\": {\n        \"type\": \"string\"\n      }\n    }\n  }\n}\n",
         "height": 540
       },
-      "id": "d21fc408-f66d-4b07-972a-811aa420b4ce",
+      "id": "0dc2a305-7d5e-4cc4-bb0a-d716c1feddaa",
       "name": "Sticky Note2",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1600,
-        256
+        1440,
+        -48
       ],
       "typeVersion": 1
     },
@@ -172,17 +172,17 @@
         "operation": "transcribe",
         "options": {}
       },
-      "id": "8842d0c7-082e-4b4e-b350-a8bb8f47c390",
+      "id": "0aed6a5b-95eb-42d9-a90c-f0cee94879cc",
       "name": "OpenAI",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "position": [
-        1840,
-        1104
+        1680,
+        800
       ],
       "typeVersion": 1.8,
       "credentials": {
         "openAiApi": {
-          "id": "byfSf2daIyjWaYdm",
+          "id": "3S3EpYCFWBw8IXUH",
           "name": "OpenAi account"
         }
       }
@@ -203,17 +203,17 @@
           "detail": "auto"
         }
       },
-      "id": "a342dc14-0ffe-41ba-a3e9-853fe043f4fb",
+      "id": "dfe76b14-aaf5-41dd-9c27-864909ea180c",
       "name": "OpenAI1",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "position": [
-        1840,
-        1280
+        1680,
+        976
       ],
       "typeVersion": 1.8,
       "credentials": {
         "openAiApi": {
-          "id": "byfSf2daIyjWaYdm",
+          "id": "3S3EpYCFWBw8IXUH",
           "name": "OpenAi account"
         }
       }
@@ -223,12 +223,12 @@
         "operation": "pdf",
         "options": {}
       },
-      "id": "b1220587-fadf-4b5b-944e-b6e60b64c141",
+      "id": "15ae748e-42ee-4128-a546-643a9aa60250",
       "name": "Extract from PDF",
       "type": "n8n-nodes-base.extractFromFile",
       "position": [
-        2256,
-        1488
+        2096,
+        1184
       ],
       "typeVersion": 1
     },
@@ -236,12 +236,12 @@
       "parameters": {
         "jsCode": "let requests = $(\"Download Document\").all()\n\nrequests.forEach((request) => {\n  let mime_type = request.json.mime_type\n\n  if (\n    mime_type === \"text/calendar\" || \n    mime_type === \"application/ics\" || \n    mime_type === \"text/x-calendar\"\n  ) {\n    request.json.mime_type = \"mapped/calendar\"\n  }\n\n  if (\n    mime_type === \"application/xml\" || \n    mime_type === \"text/xml\") {\n    request.json.mime_type = \"mapped/xml\"\n  }\n\n  if (!mime_type) {\n    request.json.mime_type = $('Gets WhatsApp Document Source URL').first().json.mime_type\n  }\n})\n\nreturn requests;"
       },
-      "id": "a0920bc7-71bd-4803-bbce-4cef14cac5ee",
+      "id": "f4b65692-d5de-423c-9959-0b192c4b3090",
       "name": "Map file extensions",
       "type": "n8n-nodes-base.code",
       "position": [
-        1840,
-        1472
+        1680,
+        1168
       ],
       "typeVersion": 2
     },
@@ -259,12 +259,12 @@
         },
         "options": {}
       },
-      "id": "77302aa3-6e87-4de6-9ec7-387ddb76fc84",
+      "id": "1e7c8516-dc58-4776-8da0-a5d0b350fbfc",
       "name": "Map document prompt",
       "type": "n8n-nodes-base.set",
       "position": [
-        2432,
-        1344
+        2272,
+        1040
       ],
       "typeVersion": 3.4
     },
@@ -282,12 +282,12 @@
         },
         "options": {}
       },
-      "id": "90821e49-c98d-4617-8289-1be6d3aeb087",
+      "id": "afcd5fb7-c6ae-49ba-afad-5d07eeed38a6",
       "name": "Map image prompt",
       "type": "n8n-nodes-base.set",
       "position": [
-        2048,
-        1280
+        1888,
+        976
       ],
       "typeVersion": 3.4
     },
@@ -304,19 +304,19 @@
             {
               "id": "5ae33a41-fdb6-42ba-a4df-6714a70e7073",
               "name": "from",
-              "value": "={{ $('WhatsApp Trigger1').item.json.messages[0].from }}",
+              "value": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
               "type": "string"
             }
           ]
         },
         "options": {}
       },
-      "id": "cf603f5c-0a6e-4cdd-846b-738ed417daa2",
+      "id": "6a4c2c16-33a3-4cc9-b57a-a87a6e0e0f86",
       "name": "Map text prompt",
       "type": "n8n-nodes-base.set",
       "position": [
-        2000,
-        848
+        1840,
+        544
       ],
       "typeVersion": 3.4
     },
@@ -326,19 +326,19 @@
         "operation": "mediaUrlGet",
         "mediaGetId": "={{ $json.messages[0].audio.id}}"
       },
-      "id": "7727e89d-cf21-4440-ab7f-85594eb1ec44",
+      "id": "843bdb96-a82d-4e22-83b5-1f53d0d4e0ea",
       "name": "Gets WhatsApp Voicemail Source URL",
       "type": "n8n-nodes-base.whatsApp",
       "position": [
-        1392,
-        1104
+        1232,
+        800
       ],
       "webhookId": "bbe62f3d-8788-49d4-aae6-9e9411446d44",
       "typeVersion": 1,
       "credentials": {
         "whatsAppApi": {
-          "id": "UA7fntD6z61qwrjb",
-          "name": "daniel-account"
+          "id": "EVSA7TBYnRBiygqi",
+          "name": "WhatsApp account"
         }
       }
     },
@@ -348,19 +348,19 @@
         "operation": "mediaUrlGet",
         "mediaGetId": "={{ $json.messages[0].image.id }}"
       },
-      "id": "08b938a1-d32e-4aa1-958f-bdabd3dfec13",
+      "id": "84ce3b28-b4c1-4e9b-bf8f-8f5275d46ff9",
       "name": "Gets WhatsApp Image Source URL",
       "type": "n8n-nodes-base.whatsApp",
       "position": [
-        1392,
-        1280
+        1232,
+        976
       ],
       "webhookId": "c2982df4-1d8d-4669-a724-44ae17d11e6c",
       "typeVersion": 1,
       "credentials": {
         "whatsAppApi": {
-          "id": "UA7fntD6z61qwrjb",
-          "name": "daniel-account"
+          "id": "EVSA7TBYnRBiygqi",
+          "name": "WhatsApp account"
         }
       }
     },
@@ -370,18 +370,18 @@
         "operation": "mediaUrlGet",
         "mediaGetId": "={{ $json.messages[0].document.id }}"
       },
-      "id": "d934ce80-cdb0-476d-8896-b8c226086933",
+      "id": "e16b1188-821e-4f59-a9ba-81176f790eba",
       "name": "Gets WhatsApp Document Source URL",
       "type": "n8n-nodes-base.whatsApp",
       "position": [
-        1392,
-        1472
+        1232,
+        1168
       ],
       "webhookId": "c2982df4-1d8d-4669-a724-44ae17d11e6c",
       "typeVersion": 1,
       "credentials": {
         "whatsAppApi": {
-          "id": "UA7fntD6z61qwrjb",
+          "id": "EVSA7TBYnRBiygqi",
           "name": "WhatsApp account"
         }
       }
@@ -393,21 +393,17 @@
         "genericAuthType": "httpHeaderAuth",
         "options": {}
       },
-      "id": "aad1b221-0985-43e7-bc0b-312436171abe",
+      "id": "eed687bb-6374-4128-ad0d-568bfec80ec6",
       "name": "Download Voicemail",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        1632,
-        1104
+        1472,
+        800
       ],
       "typeVersion": 4.2,
       "credentials": {
-        "httpBasicAuth": {
-          "id": "ibUTDZJclFOcZlxe",
-          "name": "Unnamed credential"
-        },
         "httpHeaderAuth": {
-          "id": "hNBsndCQzaeTiGig",
+          "id": "NqbvtHJVCIl7Azsw",
           "name": "Header Auth account"
         }
       }
@@ -419,17 +415,17 @@
         "genericAuthType": "httpHeaderAuth",
         "options": {}
       },
-      "id": "dfd08bec-9d30-4125-b167-7feaeefd7afa",
+      "id": "50b635bb-782a-4f11-b38c-916e4ba10e28",
       "name": "Download Image",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        1632,
-        1280
+        1472,
+        976
       ],
       "typeVersion": 4.2,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "hNBsndCQzaeTiGig",
+          "id": "NqbvtHJVCIl7Azsw",
           "name": "Header Auth account"
         }
       }
@@ -445,17 +441,17 @@
           }
         }
       },
-      "id": "ba3d221f-ce5c-4105-82cf-fbd11c2c0e2f",
+      "id": "7821e3e1-ca75-49f5-ab03-b9e5a57e8bd6",
       "name": "Download Document",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        1632,
-        1472
+        1472,
+        1168
       ],
       "typeVersion": 4.2,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "hNBsndCQzaeTiGig",
+          "id": "NqbvtHJVCIl7Azsw",
           "name": "Header Auth account"
         }
       }
@@ -567,12 +563,12 @@
         },
         "options": {}
       },
-      "id": "87ecc44f-cc1f-47e0-b995-079230be118d",
+      "id": "b229f329-5f06-4145-bbfa-b07411fd4643",
       "name": "Route Types",
       "type": "n8n-nodes-base.switch",
       "position": [
-        976,
-        1072
+        816,
+        768
       ],
       "typeVersion": 3.2
     },
@@ -659,12 +655,12 @@
         },
         "options": {}
       },
-      "id": "ce3d08ce-4445-4473-90b2-227ba065c4d8",
+      "id": "95c5ba90-bcdb-4251-a891-38efc981d695",
       "name": "Route Document Types",
       "type": "n8n-nodes-base.switch",
       "position": [
-        2048,
-        1456
+        1888,
+        1152
       ],
       "typeVersion": 3.2
     },
@@ -672,47 +668,23 @@
       "parameters": {
         "operation": "send",
         "phoneNumberId": "740050119202275",
-        "recipientPhoneNumber": "={{ $('WhatsApp Trigger1').item.json.messages[0].from }}",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
         "textBody": "=Não trabalhamos com esse tipo de arquivo, poderia enviar no formato PDF ou texto?",
         "additionalFields": {}
       },
-      "id": "18684032-23ec-4e10-88f4-e93363432a67",
+      "id": "a30e05df-821e-452d-bbe4-acf0ff421339",
       "name": "Send Unsupported Response",
       "type": "n8n-nodes-base.whatsApp",
       "position": [
-        2272,
-        1664
+        2112,
+        1360
       ],
       "webhookId": "017d267f-4897-4726-bf03-304ef10352bf",
       "typeVersion": 1,
       "credentials": {
         "whatsAppApi": {
-          "id": "UA7fntD6z61qwrjb",
+          "id": "EVSA7TBYnRBiygqi",
           "name": "WhatsApp account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "send",
-        "phoneNumberId": "740050119202275",
-        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
-        "textBody": "={{ $json.text.body }}",
-        "additionalFields": {}
-      },
-      "id": "acc8e4ae-0610-42fc-a318-b9a23a38919b",
-      "name": "Send Response",
-      "type": "n8n-nodes-base.whatsApp",
-      "position": [
-        4112,
-        1072
-      ],
-      "webhookId": "23834751-5066-48ba-8e19-549680df2b27",
-      "typeVersion": 1,
-      "credentials": {
-        "whatsAppApi": {
-          "id": "UA7fntD6z61qwrjb",
-          "name": "daniel-account"
         }
       }
     },
@@ -731,65 +703,64 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStoreRedis",
       "typeVersion": 1.3,
       "position": [
-        1152,
-        1776
+        992,
+        1472
       ],
-      "id": "0d3caa31-601c-4cf5-b4a6-fefac224c304",
+      "id": "0bc80cf3-d4ed-4d67-bd4f-8a91bfadc3ac",
       "name": "Redis Vector Store",
       "credentials": {
         "redis": {
-          "id": "d34TnYdlfXwNojDp",
-          "name": "Redis account 2"
+          "id": "JteZ72SNrCSYwHG8",
+          "name": "Redis account"
         }
       }
     },
     {
       "parameters": {
         "mode": "retrieve-as-tool",
-        "toolDescription": "=Use esta base de conhecimento para recuperar informações factuais, scripts estruturados e frases específicas usadas no atendimento da UP Designer.\nO documento está dividido em:\n\nPlanos, Preços, Benefícios e Links oficiais\nLocal: Tópico 1 do RAG\nRecupere: valores dos planos, diferenciação entre Bronze/Prata/Ouro, itens incluídos e links de pagamento.\n\nCredibilidade e Segurança\nLocal: Tópico 2 do RAG\nRecupere: histórico da UP Designer, provas sociais, segurança de pagamento e garantias.\n\nProcesso de Criação\nLocal: Tópico 3 do RAG\nRecupere: etapas, briefing, revisões, fluxo após a compra e forma de entrega.\n\nScripts de Vendas e Objeções (SPIN, BANT, MEDDIC, Challenger, Sandler, GAP Selling)\nLocal: Tópico 4 do RAG\nRecupere: perguntas de qualificação, implicação, valor, perguntas de urgência, respostas prontas para objeções e frases de impacto.\n\nCTAs (Chamadas para Ação)\nLocal: Tópico 5 do RAG\nRecupere: frases de fechamento, perguntas finais e convites para avançar.\n\nImportante:\n\nConsulte esta base de conhecimento apenas uma vez por pergunta do usuário. Utilize as informações recuperadas para formular sua resposta e não consulte novamente para a mesma solicitação.\nUse apenas para recuperar dados e frases exatas.\nNão utilize este RAG para comportamento, estilo de escrita ou tom. Isso é definido pelo system prompt.\nSempre priorize trechos mais específicos quando houver ambiguidade.",
+        "toolDescription": "=Banco de dados de Preços, Links de Pagamento e Argumentos de Venda.\nSempre que precisar saber um valor, um link ou o que está incluso no plano, consulte aqui.\nContém a URL exata para pagamento.",
         "redisIndex": {
           "__rl": true,
           "value": "rag_index",
           "mode": "list",
           "cachedResultName": "rag_index"
         },
-        "topK": 1,
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.vectorStoreRedis",
       "typeVersion": 1.3,
       "position": [
-        2752,
-        1456
+        2976,
+        1152
       ],
-      "id": "5530fc58-118f-4845-bee9-af5265bcc2d2",
+      "id": "62167e30-6f74-48af-ab4f-da7b02681363",
       "name": "Redis Vector Store1",
       "credentials": {
         "redis": {
-          "id": "d34TnYdlfXwNojDp",
-          "name": "Redis account 2"
+          "id": "JteZ72SNrCSYwHG8",
+          "name": "Redis account"
         }
       }
     },
     {
       "parameters": {
         "sessionIdType": "customKey",
-        "sessionKey": "={{ $json.from }}",
-        "sessionTTL": 60,
-        "contextWindowLength": 6
+        "sessionKey": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "sessionTTL": 3600,
+        "contextWindowLength": 10
       },
       "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
       "typeVersion": 1.5,
       "position": [
-        2752,
-        1264
+        2976,
+        960
       ],
-      "id": "5b50d5c9-de8e-4b3e-ade3-c0254ef736a0",
+      "id": "e4f8176a-bc47-478a-b30c-7b7b1f6b474d",
       "name": "Redis Chat Memory",
       "credentials": {
         "redis": {
-          "id": "d34TnYdlfXwNojDp",
-          "name": "Redis account 2"
+          "id": "JteZ72SNrCSYwHG8",
+          "name": "Redis account"
         }
       }
     },
@@ -888,14 +859,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4944,
-        1120
+        5200,
+        816
       ],
-      "id": "596c13b2-77ad-4347-bc85-83e13664e744",
+      "id": "ad3683f1-7fe2-4eeb-b305-d091f96a7b12",
       "name": "Insert rows in a table",
       "credentials": {
         "postgres": {
-          "id": "zatnGnxMczro8wRm",
+          "id": "OXJxelC3X5fBylAt",
           "name": "Postgres account"
         }
       }
@@ -995,14 +966,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        5360,
-        1120
+        5616,
+        816
       ],
-      "id": "ee467af9-7fa0-4c1c-9495-1f92c1a96c54",
+      "id": "f60195c0-c1da-4134-becb-e8764101777d",
       "name": "MESSAGE 1",
       "credentials": {
         "postgres": {
-          "id": "zatnGnxMczro8wRm",
+          "id": "OXJxelC3X5fBylAt",
           "name": "Postgres account"
         }
       }
@@ -1014,10 +985,10 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        5168,
-        1120
+        5424,
+        816
       ],
-      "id": "8e7d53ea-4047-4fb2-87e2-26339c863029",
+      "id": "bab55e41-794e-4ef3-913f-a51a38ed1839",
       "name": "Wait",
       "webhookId": "3351e441-efc0-4a0d-b036-bd71aa589ed3"
     },
@@ -1028,10 +999,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        4736,
-        1120
+        4992,
+        816
       ],
-      "id": "de96b0ee-471e-4286-8d69-0e5195ad8d96",
+      "id": "cfe91760-8d40-4412-96f1-d0e30fb52cbd",
       "name": "Loop Over Items1"
     },
     {
@@ -1042,15 +1013,15 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        5296,
-        1296
+        5552,
+        992
       ],
-      "id": "e0282092-4c68-4f5b-ab04-58b196a2f5ec",
+      "id": "db454811-00c5-4ff8-ba9e-213b7561332a",
       "name": "Redis",
       "credentials": {
         "redis": {
-          "id": "d34TnYdlfXwNojDp",
-          "name": "Redis account 2"
+          "id": "JteZ72SNrCSYwHG8",
+          "name": "Redis account"
         }
       }
     },
@@ -1082,10 +1053,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5104,
-        1312
+        5360,
+        1008
       ],
-      "id": "7ca8a869-4e96-44a7-8425-6331609563d0",
+      "id": "51b5b82a-75fe-495e-8d62-4775a16f15b4",
       "name": "If"
     },
     {
@@ -1117,14 +1088,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        5472,
-        1296
+        5728,
+        992
       ],
-      "id": "6aec58f9-fdf2-413b-bcfd-ee6cf2c97516",
+      "id": "50a5178f-21e3-44e5-a776-ee2fd6076fd6",
       "name": "Delete table or rows",
       "credentials": {
         "postgres": {
-          "id": "zatnGnxMczro8wRm",
+          "id": "OXJxelC3X5fBylAt",
           "name": "Postgres account"
         }
       }
@@ -1136,23 +1107,23 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3056,
-        1072
+        3280,
+        768
       ],
-      "id": "1bd24815-320f-46c2-9404-b83c828d3348",
+      "id": "877db8d2-10d0-4aac-8794-9aee7ee9cd75",
       "name": "Processar Saída do Agente"
     },
     {
       "parameters": {
-        "jsCode": "const output = $('AI Agent2').first().json.output || $json;\nconst result = [];\n\nconst mensagens = [\"mensagem\", \"micro_cta\"];\n\nfor (let i = 0; i < mensagens.length; i++) {\n  const key = mensagens[i];\n  const msg = output[key];\n\n  if (typeof msg === \"string\" && msg.trim() !== \"\") {\n    result.push({\n      json: {\n        conteudo: msg.trim(),\n        type: \"message\",\n        numero: String(i + 1),\n        order: i + 1,\n      },\n    });\n  } else if (msg && typeof msg.conteudo === \"string\" && msg.conteudo.trim() !== \"\") {\n    result.push({\n      json: {\n        ...msg,\n        order: i + 1,\n      },\n    });\n  }\n}\n\nreturn result.length > 0 ? result : [{ json: { error: \"Nenhuma mensagem válida encontrada.\" } }];\n"
+        "jsCode": "// Ajuste: Apontar para o nome correto do node do Agente\n// Se o node anterior já trazer o JSON, usamos o $json diretamente como fallback\nlet output = {};\n\ntry {\n  // Tenta pegar diretamente do Agente se ele existir no histórico\n  output = $('Knowledge Base Agent').first().json.output;\n} catch (e) {\n  // Se der erro (ex: teste manual isolado), tenta pegar do input atual\n  output = $json.output || $json;\n}\n\nconst result = [];\n// Lista de chaves que esperamos do Output Parser\nconst mensagens = [\"mensagens\", \"mensagem\", \"micro_cta\"];\n\n// Verifica se 'mensagens' é um array (formato novo do parser)\nif (output.mensagens && Array.isArray(output.mensagens)) {\n     for (let i = 0; i < output.mensagens.length; i++) {\n        result.push({\n            json: {\n                conteudo: output.mensagens[i],\n                type: \"message\",\n                order: i + 1\n            }\n        });\n    }\n} \n// Fallback para estrutura antiga ou simples string\nelse {\n    for (let i = 0; i < mensagens.length; i++) {\n      const key = mensagens[i];\n      const msg = output[key];\n\n      if (typeof msg === \"string\" && msg.trim() !== \"\") {\n        result.push({\n          json: {\n            conteudo: msg.trim(),\n            type: \"message\",\n            order: i + 1,\n          },\n        });\n      }\n    }\n}\n\nreturn result.length > 0 ? result : [{ json: { error: \"Nenhuma mensagem válida encontrada.\" } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4512,
-        1072
+        4768,
+        768
       ],
-      "id": "54a1f177-fdd9-4858-a217-ba16958f0514",
+      "id": "d9e40782-08f9-4708-8126-028464faa9af",
       "name": "Preparar Mensagens para Loop"
     },
     {
@@ -1162,39 +1133,25 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4944,
-        1312
+        5200,
+        1008
       ],
-      "id": "dba9e551-f366-4f98-808e-b696dc22fb3a",
+      "id": "716e7a74-5d29-41a7-86d0-8a2701069311",
       "name": "Detectar Links Pagamento"
     },
     {
       "parameters": {
-        "amount": 1
-      },
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
-      "position": [
-        3296,
-        1072
-      ],
-      "id": "432a6aa9-622b-4fda-b535-c1ec7e52659d",
-      "name": "Wait1",
-      "webhookId": "82b15df0-e35d-4ffc-b6ee-6884ef032af2"
-    },
-    {
-      "parameters": {
         "schemaType": "manual",
-        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"mensagens\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" },\n      \"minItems\": 1,\n      \"maxItems\": 2,\n      \"description\": \"Uma lista de 1 ou 2 strings de mensagem. A primeira é a resposta principal. A segunda (se houver) é o micro-CTA. A última mensagem na lista DEVE ser sempre uma pergunta/CTA.\"\n    }\n  },\n  \"required\": [\"mensagens\"],\n  \"additionalProperties\": false\n}",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"mensagens\": {\n      \"type\": \"array\",\n      \"description\": \"Lista exata de mensagens de texto para o WhatsApp.\",\n      \"items\": {\n        \"type\": \"string\",\n        \"description\": \"Texto da mensagem. Sem emojis soltos.\"\n      },\n      \"minItems\": 1,\n      \"maxItems\": 2\n    },\n    \"acao_sugerida\": {\n      \"type\": \"string\",\n      \"enum\": [\"continuar\", \"fechar_venda\"],\n      \"description\": \"Status da conversa.\"\n    }\n  },\n  \"required\": [\"mensagens\"]\n}",
         "autoFix": true
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        3008,
-        1280
+        3232,
+        976
       ],
-      "id": "ea0e41bd-b188-41e7-82c7-1814d82a8ba0",
+      "id": "dc556502-03ef-4065-b5f6-62465e0a7bc9",
       "name": "Structured Output Parser1"
     },
     {
@@ -1210,14 +1167,14 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        3056,
-        1440
+        3280,
+        1136
       ],
-      "id": "183c8655-0571-46f9-b284-13b7613d6319",
+      "id": "cca9cbc5-aa5c-4f40-92cb-f545d74dd7b8",
       "name": "OpenAI Chat Model2",
       "credentials": {
         "openAiApi": {
-          "id": "byfSf2daIyjWaYdm",
+          "id": "3S3EpYCFWBw8IXUH",
           "name": "OpenAi account"
         }
       }
@@ -1231,11 +1188,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        560,
-        1696
+        400,
+        1392
       ],
       "typeVersion": 1,
-      "id": "2e8e99c7-edf3-4317-9cfe-e9f946ec3fea",
+      "id": "48730372-463a-4c53-843d-7f9ca4fbd720",
       "name": "Sticky Note3"
     },
     {
@@ -1258,42 +1215,14 @@
         },
         "options": {}
       },
-      "id": "42b3a1a6-4026-496c-b14f-7dd463732ac9",
+      "id": "cec0fd90-5641-4ea2-aba0-614b409b7140",
       "name": "Map text prompt (audio)",
       "type": "n8n-nodes-base.set",
       "position": [
-        2208,
-        1104
+        2048,
+        800
       ],
       "typeVersion": 3.4
-    },
-    {
-      "parameters": {
-        "updates": [
-          "messages"
-        ],
-        "options": {
-          "messageStatusUpdates": [
-            "all"
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.whatsAppTrigger",
-      "typeVersion": 1,
-      "position": [
-        672,
-        944
-      ],
-      "id": "e8ebfaf8-3b49-4ef0-9163-95a806a4e498",
-      "name": "WhatsApp Trigger",
-      "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
-      "credentials": {
-        "whatsAppTriggerApi": {
-          "id": "Lv9lqv3eZUrMAbxC",
-          "name": "credencial-daniel"
-        }
-      },
-      "disabled": true
     },
     {
       "parameters": {
@@ -1302,10 +1231,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        3616,
-        1072
+        3664,
+        768
       ],
-      "id": "536f58f1-a877-4bde-a4c3-1685a5a7dadc",
+      "id": "23f56e64-7204-4795-8088-0033ad7772ce",
       "name": "Loop Over Items"
     },
     {
@@ -1315,7 +1244,7 @@
             {
               "id": "ed295660-0139-4f86-b346-7c8170bb67dd",
               "name": "text.body",
-              "value": "={{ $('Wait1').item.json.text.body }}",
+              "value": "={{ $json.text.body }}",
               "type": "string"
             }
           ]
@@ -1325,94 +1254,11 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3856,
-        1168
+        3984,
+        976
       ],
-      "id": "f69ff815-1edd-43f9-a5cf-29484e88015a",
+      "id": "425ee5f8-2e1e-4242-b42d-af4ca2048332",
       "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "updates": [
-          "messages"
-        ],
-        "options": {
-          "messageStatusUpdates": [
-            "all"
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.whatsAppTrigger",
-      "typeVersion": 1,
-      "position": [
-        672,
-        1408
-      ],
-      "id": "d9050076-4a1d-4104-bce4-293e2bd7f0ef",
-      "name": "WhatsApp Trigger2",
-      "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
-      "credentials": {
-        "whatsAppTriggerApi": {
-          "id": "XFaHAecnNzwuu4tj",
-          "name": "patrick-credencial"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "updates": [
-          "messages"
-        ],
-        "options": {
-          "messageStatusUpdates": [
-            "all"
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.whatsAppTrigger",
-      "typeVersion": 1,
-      "position": [
-        672,
-        1552
-      ],
-      "id": "e719d4cf-cc30-4648-85f6-ee0b7547dd3f",
-      "name": "WhatsApp Trigger3",
-      "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
-      "credentials": {
-        "whatsAppTriggerApi": {
-          "id": "XFaHAecnNzwuu4tj",
-          "name": "patrick-credencial"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "updates": [
-          "messages"
-        ],
-        "options": {
-          "messageStatusUpdates": [
-            "all"
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.whatsAppTrigger",
-      "typeVersion": 1,
-      "position": [
-        656,
-        1120
-      ],
-      "id": "27b298a6-1ee2-4dd2-9191-a64bfb69fcf3",
-      "name": "WhatsApp Trigger1",
-      "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
-      "credentials": {
-        "whatsAppTriggerApi": {
-          "id": "XFaHAecnNzwuu4tj",
-          "name": "patrick-credencial"
-        }
-      }
     },
     {
       "parameters": {
@@ -1421,154 +1267,510 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "typeVersion": 1.2,
       "position": [
-        2736,
-        1600
+        2960,
+        1296
       ],
-      "id": "d92c1418-2060-4478-92e1-67b8e9456fbe",
+      "id": "e807dc1e-8400-43bf-aa99-338f74070c37",
       "name": "Embeddings OpenAI1",
       "credentials": {
         "openAiApi": {
-          "id": "byfSf2daIyjWaYdm",
+          "id": "3S3EpYCFWBw8IXUH",
           "name": "OpenAi account"
         }
       }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        3568,
+        1360
+      ],
+      "id": "44b48a63-5c9d-4c42-b1be-ec9d1f73e6f1",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "740050119202275",
+        "recipientPhoneNumber": "={{ $json.session_id }}",
+        "textBody": "Vi que ficou um tempinho off! Quer que eu te envie de novo os valores e detalhes dos pacotes pra facilitar?",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        4064,
+        1360
+      ],
+      "id": "4ba07edc-ca98-453c-8914-a9ab7601b475",
+      "name": "Send message",
+      "webhookId": "a2500a08-b652-4d29-91c8-fed3605fb7a1",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "EVSA7TBYnRBiygqi",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT DISTINCT session_id\nFROM chat_messages\nWHERE role = 'bot'\n  AND sent_at <= NOW() - INTERVAL '15 minutes'\n  AND rechamada = FALSE\n  AND sent_at = (\n      SELECT MAX(sent_at)\n      FROM chat_messages cm2\n      WHERE cm2.session_id = chat_messages.session_id\n  )",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3840,
+        1360
+      ],
+      "id": "9e8aa437-3138-4192-a4df-722c53eb0496",
+      "name": "SELECIONAR NUMERO USUARIO INAT.",
+      "credentials": {
+        "postgres": {
+          "id": "OXJxelC3X5fBylAt",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_messages",
+          "mode": "list",
+          "cachedResultName": "chat_messages"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "rechamada": true,
+            "session_id": "={{ $json.contacts[0].wa_id }}"
+          },
+          "matchingColumns": [
+            "session_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "role",
+              "displayName": "role",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sent_at",
+              "displayName": "sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "rechamada",
+              "displayName": "rechamada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4256,
+        1360
+      ],
+      "id": "eba0a783-431a-4a8a-b36e-3b5f25f3a76b",
+      "name": "Update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "OXJxelC3X5fBylAt",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "740050119202275",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "={{ $json.text.body }}",
+        "additionalFields": {}
+      },
+      "id": "d055d658-53b6-4fdd-a9a7-42a748b3c4cf",
+      "name": "Send Response1",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        4176,
+        976
+      ],
+      "webhookId": "23834751-5066-48ba-8e19-549680df2b27",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "EVSA7TBYnRBiygqi",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        4368,
+        976
+      ],
+      "id": "99c1444d-03d4-4578-9715-2752afe9861a",
+      "name": "Wait2",
+      "webhookId": "9573613e-6cae-4a18-871a-0386bfcaa193"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {
+          "messageStatusUpdates": [
+            "all"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        496,
+        976
+      ],
+      "id": "19452bce-33bc-40bd-ae26-2814aac3474f",
+      "name": "texto-disable",
+      "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "qlI1dV927sKZqd0y",
+          "name": "WhatsApp OAuth account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {
+          "messageStatusUpdates": [
+            "all"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        496,
+        1104
+      ],
+      "id": "1fc817ce-a5e6-43f7-8087-fcbc62e6bf1a",
+      "name": "image-disable",
+      "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "qlI1dV927sKZqd0y",
+          "name": "WhatsApp OAuth account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {
+          "messageStatusUpdates": [
+            "all"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        496,
+        1248
+      ],
+      "id": "705646c1-8aeb-4770-adb8-655978ca32a5",
+      "name": "pdf-disable",
+      "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "qlI1dV927sKZqd0y",
+          "name": "WhatsApp OAuth account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {
+          "messageStatusUpdates": [
+            "all"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        496,
+        672
+      ],
+      "id": "60db3264-8ae2-4699-a821-cf2313c5ff4c",
+      "name": "audio-disable",
+      "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "qlI1dV927sKZqd0y",
+          "name": "WhatsApp OAuth account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {
+          "messageStatusUpdates": [
+            "all"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        496,
+        832
+      ],
+      "id": "4cbfd62f-1070-4604-a523-724096f5f662",
+      "name": "WhatsApp Trigger",
+      "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "qlI1dV927sKZqd0y",
+          "name": "WhatsApp OAuth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE chat_messages (\n    id SERIAL PRIMARY KEY,                -- Identificador único da mensagem\n    session_id UUID NOT NULL,             -- Identifica a conversa do usuário (ex: wa_id do WhatsApp)\n    role VARCHAR(10) NOT NULL,            -- 'user' para usuário, 'bot' para mensagens do bot\n    message TEXT NOT NULL,                -- Conteúdo da mensagem\n    sent_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), -- Data/hora de envio da mensagem\n    rechamada BOOLEAN DEFAULT FALSE       -- Indica se já foi feito o follow-up (rechamada)\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        608,
+        448
+      ],
+      "id": "3cd281f2-53a6-4538-bdbc-05429be7d78a",
+      "name": "CRIAR TABELAS",
+      "credentials": {
+        "postgres": {
+          "id": "OXJxelC3X5fBylAt",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "ALTER TABLE chat_messages\nALTER COLUMN session_id TYPE VARCHAR(30);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        832,
+        448
+      ],
+      "id": "7273f5c2-b60e-4c04-a5ca-dc2e4cc6bc0e",
+      "name": "ALTER TABLE PARA CORRIGIR TIPO DE COLUNA",
+      "credentials": {
+        "postgres": {
+          "id": "OXJxelC3X5fBylAt",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM chat_messages;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1056,
+        448
+      ],
+      "id": "b8150464-0240-4844-9772-18b7a040b248",
+      "name": "DELETE TUDO",
+      "credentials": {
+        "postgres": {
+          "id": "OXJxelC3X5fBylAt",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
     }
   ],
-  "pinData": {
-    "WhatsApp Trigger": [
-      {
-        "json": {
-          "messaging_product": "whatsapp",
-          "metadata": {
-            "display_phone_number": "15551791204",
-            "phone_number_id": "740050119202275"
-          },
-          "contacts": [
-            {
-              "profile": {
-                "name": "Daniel Alvarez"
-              },
-              "wa_id": "5521969547552"
-            }
-          ],
-          "messages": [
-            {
-              "from": "5521969547552",
-              "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYFjNFQjA3NDlBQ0JEQUYzNERERDJCQTEA",
-              "timestamp": "1763648144",
-              "type": "audio",
-              "audio": {
-                "mime_type": "audio/ogg; codecs=opus",
-                "sha256": "uM6bssrQq+Ff2gFoMWxH6lqHqfEATP0c1VmnI3mY/K8=",
-                "id": "1330983264905395",
-                "voice": false
-              }
-            }
-          ],
-          "field": "messages"
-        }
-      }
-    ],
-    "WhatsApp Trigger2": [
-      {
-        "json": {
-          "messaging_product": "whatsapp",
-          "metadata": {
-            "display_phone_number": "15551791204",
-            "phone_number_id": "740050119202275"
-          },
-          "contacts": [
-            {
-              "profile": {
-                "name": "Daniel Alvarez"
-              },
-              "wa_id": "5521969547552"
-            }
-          ],
-          "messages": [
-            {
-              "from": "5521969547552",
-              "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYFjNFQjBEMkMxQ0E1QUU3QjJGRjU3NEQA",
-              "timestamp": "1763653641",
-              "type": "image",
-              "image": {
-                "mime_type": "image/jpeg",
-                "sha256": "4L1Y1z0UYwCqnKmkYRcMwvednuRa+E0s/EG95QZqBbs=",
-                "id": "812973104829074"
-              }
-            }
-          ],
-          "field": "messages"
-        }
-      }
-    ],
-    "WhatsApp Trigger3": [
-      {
-        "json": {
-          "messaging_product": "whatsapp",
-          "metadata": {
-            "display_phone_number": "15551791204",
-            "phone_number_id": "740050119202275"
-          },
-          "contacts": [
-            {
-              "profile": {
-                "name": "Daniel Alvarez"
-              },
-              "wa_id": "5521969547552"
-            }
-          ],
-          "messages": [
-            {
-              "from": "5521969547552",
-              "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYFjNFQjA1OTM4NzQ0RkVERDk3NkJBNEMA",
-              "timestamp": "1763653709",
-              "type": "document",
-              "document": {
-                "filename": "CATALAGO UP DESIGNER.pdf",
-                "mime_type": "application/pdf",
-                "sha256": "Ud8IqBZRIA6v2ftFwZYJyd30uklUmbXVot0uwPdc5kg=",
-                "id": "1150602070490685"
-              }
-            }
-          ],
-          "field": "messages"
-        }
-      }
-    ],
-    "WhatsApp Trigger1": [
-      {
-        "json": {
-          "messaging_product": "whatsapp",
-          "metadata": {
-            "display_phone_number": "15551791204",
-            "phone_number_id": "740050119202275"
-          },
-          "contacts": [
-            {
-              "profile": {
-                "name": "Daniel Alvarez"
-              },
-              "wa_id": "5521969547552"
-            }
-          ],
-          "messages": [
-            {
-              "from": "5521969547552",
-              "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYFjNFQjA4RUE4M0YzMkNCNTlDQzY2QkEA",
-              "timestamp": "1762519850",
-              "text": {
-                "body": "olá, quero mais informações"
-              },
-              "type": "text"
-            }
-          ],
-          "field": "messages"
-        }
-      }
-    ]
-  },
   "connections": {
+    "Knowledge Base Agent": {
+      "main": [
+        [
+          {
+            "node": "Processar Saída do Agente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Redis Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Google Docs Importer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Document Section Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Redis Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Document Chunker": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Document Section Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs Importer": {
+      "main": [
+        [
+          {
+            "node": "Redis Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "OpenAI": {
       "main": [
         [
@@ -1585,6 +1787,127 @@
         [
           {
             "node": "Map image prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from PDF": {
+      "main": [
+        [
+          {
+            "node": "Map document prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map file extensions": {
+      "main": [
+        [
+          {
+            "node": "Route Document Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map document prompt": {
+      "main": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map image prompt": {
+      "main": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map text prompt": {
+      "main": [
+        [
+          {
+            "node": "Knowledge Base Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gets WhatsApp Voicemail Source URL": {
+      "main": [
+        [
+          {
+            "node": "Download Voicemail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gets WhatsApp Image Source URL": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gets WhatsApp Document Source URL": {
+      "main": [
+        [
+          {
+            "node": "Download Document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Voicemail": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Document": {
+      "main": [
+        [
+          {
+            "node": "Map file extensions",
             "type": "main",
             "index": 0
           }
@@ -1623,149 +1946,6 @@
         ]
       ]
     },
-    "Download Image": {
-      "main": [
-        [
-          {
-            "node": "OpenAI1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Map text prompt": {
-      "main": [
-        [
-          {
-            "node": "Knowledge Base Agent",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Document Chunker": {
-      "ai_textSplitter": [
-        [
-          {
-            "node": "Document Section Loader",
-            "type": "ai_textSplitter",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract from PDF": {
-      "main": [
-        [
-          {
-            "node": "Map document prompt",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Map image prompt": {
-      "main": [
-        [
-          {
-            "node": "Knowledge Base Agent",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Download Document": {
-      "main": [
-        [
-          {
-            "node": "Map file extensions",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Embeddings OpenAI": {
-      "ai_embedding": [
-        [
-          {
-            "node": "Redis Vector Store",
-            "type": "ai_embedding",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "OpenAI Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Knowledge Base Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Download Voicemail": {
-      "main": [
-        [
-          {
-            "node": "OpenAI",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Map document prompt": {
-      "main": [
-        [
-          {
-            "node": "Knowledge Base Agent",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Map file extensions": {
-      "main": [
-        [
-          {
-            "node": "Route Document Types",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Google Docs Importer": {
-      "main": [
-        [
-          {
-            "node": "Redis Vector Store",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Knowledge Base Agent": {
-      "main": [
-        [
-          {
-            "node": "Processar Saída do Agente",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Route Document Types": {
       "main": [
         [
@@ -1785,66 +1965,6 @@
         [
           {
             "node": "Send Unsupported Response",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Document Section Loader": {
-      "ai_document": [
-        [
-          {
-            "node": "Redis Vector Store",
-            "type": "ai_document",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Send Unsupported Response": {
-      "main": [
-        []
-      ]
-    },
-    "Gets WhatsApp Image Source URL": {
-      "main": [
-        [
-          {
-            "node": "Download Image",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "When clicking \"Execute Workflow\"": {
-      "main": [
-        [
-          {
-            "node": "Google Docs Importer",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Gets WhatsApp Document Source URL": {
-      "main": [
-        [
-          {
-            "node": "Download Document",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Gets WhatsApp Voicemail Source URL": {
-      "main": [
-        [
-          {
-            "node": "Download Voicemail",
             "type": "main",
             "index": 0
           }
@@ -1946,7 +2066,7 @@
       "main": [
         [
           {
-            "node": "Wait1",
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -1975,23 +2095,12 @@
         ]
       ]
     },
-    "Wait1": {
-      "main": [
+    "Structured Output Parser1": {
+      "ai_outputParser": [
         [
           {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Send Response": {
-      "main": [
-        [
-          {
-            "node": "Preparar Mensagens para Loop",
-            "type": "main",
+            "node": "Knowledge Base Agent",
+            "type": "ai_outputParser",
             "index": 0
           }
         ]
@@ -2008,17 +2117,6 @@
         ]
       ]
     },
-    "Structured Output Parser1": {
-      "ai_outputParser": [
-        [
-          {
-            "node": "Knowledge Base Agent",
-            "type": "ai_outputParser",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Map text prompt (audio)": {
       "main": [
         [
@@ -2030,22 +2128,11 @@
         ]
       ]
     },
-    "WhatsApp Trigger": {
-      "main": [
-        [
-          {
-            "node": "Route Types",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Loop Over Items": {
       "main": [
         [
           {
-            "node": "Send Response",
+            "node": "Preparar Mensagens para Loop",
             "type": "main",
             "index": 0
           }
@@ -2063,40 +2150,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "WhatsApp Trigger2": {
-      "main": [
-        [
-          {
-            "node": "Route Types",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "WhatsApp Trigger3": {
-      "main": [
-        [
-          {
-            "node": "Route Types",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "WhatsApp Trigger1": {
-      "main": [
-        [
-          {
-            "node": "Route Types",
+            "node": "Send Response1",
             "type": "main",
             "index": 0
           }
@@ -2113,16 +2167,256 @@
           }
         ]
       ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "SELECIONAR NUMERO USUARIO INAT.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message": {
+      "main": [
+        [
+          {
+            "node": "Update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SELECIONAR NUMERO USUARIO INAT.": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Response1": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "texto-disable": {
+      "main": [
+        [
+          {
+            "node": "Route Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "image-disable": {
+      "main": [
+        [
+          {
+            "node": "Route Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pdf-disable": {
+      "main": [
+        [
+          {
+            "node": "Route Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "audio-disable": {
+      "main": [
+        [
+          {
+            "node": "Route Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "Route Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CRIAR TABELAS": {
+      "main": [
+        []
+      ]
+    },
+    "ALTER TABLE PARA CORRIGIR TIPO DE COLUNA": {
+      "main": [
+        []
+      ]
     }
   },
-  "active": false,
-  "settings": {},
-  "versionId": "92c4378b-d9f6-455f-a6a0-fced58c7d07d",
-  "meta": {
-    "templateId": "4827",
-    "templateCredsSetupCompleted": true,
-    "instanceId": "f68a9a73963c9909b94c9b4d1663147c9d99da766fa23b233f344186361e4ebb"
+  "pinData": {
+    "texto-disable": [
+      {
+        "messaging_product": "whatsapp",
+        "metadata": {
+          "display_phone_number": "15551791204",
+          "phone_number_id": "740050119202275"
+        },
+        "contacts": [
+          {
+            "profile": {
+              "name": "Daniel Alvarez"
+            },
+            "wa_id": "5521969547552"
+          }
+        ],
+        "messages": [
+          {
+            "from": "5521969547552",
+            "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYFjNFQjA4RUE4M0YzMkNCNTlDQzY2QkEA",
+            "timestamp": "1762519850",
+            "text": {
+              "body": "me diz mais desse plano"
+            },
+            "type": "text"
+          }
+        ],
+        "field": "messages"
+      }
+    ],
+    "image-disable": [
+      {
+        "messaging_product": "whatsapp",
+        "metadata": {
+          "display_phone_number": "15551791204",
+          "phone_number_id": "740050119202275"
+        },
+        "contacts": [
+          {
+            "profile": {
+              "name": "Daniel Alvarez"
+            },
+            "wa_id": "5521969547552"
+          }
+        ],
+        "messages": [
+          {
+            "from": "5521969547552",
+            "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYFjNFQjBEMkMxQ0E1QUU3QjJGRjU3NEQA",
+            "timestamp": "1763653641",
+            "type": "image",
+            "image": {
+              "mime_type": "image/jpeg",
+              "sha256": "4L1Y1z0UYwCqnKmkYRcMwvednuRa+E0s/EG95QZqBbs=",
+              "id": "812973104829074"
+            }
+          }
+        ],
+        "field": "messages"
+      }
+    ],
+    "pdf-disable": [
+      {
+        "messaging_product": "whatsapp",
+        "metadata": {
+          "display_phone_number": "15551791204",
+          "phone_number_id": "740050119202275"
+        },
+        "contacts": [
+          {
+            "profile": {
+              "name": "Daniel Alvarez"
+            },
+            "wa_id": "5521969547552"
+          }
+        ],
+        "messages": [
+          {
+            "from": "5521969547552",
+            "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYFjNFQjA1OTM4NzQ0RkVERDk3NkJBNEMA",
+            "timestamp": "1763653709",
+            "type": "document",
+            "document": {
+              "filename": "CATALAGO UP DESIGNER.pdf",
+              "mime_type": "application/pdf",
+              "sha256": "Ud8IqBZRIA6v2ftFwZYJyd30uklUmbXVot0uwPdc5kg=",
+              "id": "1150602070490685"
+            }
+          }
+        ],
+        "field": "messages"
+      }
+    ],
+    "audio-disable": [
+      {
+        "messaging_product": "whatsapp",
+        "metadata": {
+          "display_phone_number": "15551791204",
+          "phone_number_id": "740050119202275"
+        },
+        "contacts": [
+          {
+            "profile": {
+              "name": "Daniel Alvarez"
+            },
+            "wa_id": "5521969547552"
+          }
+        ],
+        "messages": [
+          {
+            "from": "5521969547552",
+            "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYFjNFQjA3NDlBQ0JEQUYzNERERDJCQTEA",
+            "timestamp": "1763648144",
+            "type": "audio",
+            "audio": {
+              "mime_type": "audio/ogg; codecs=opus",
+              "sha256": "uM6bssrQq+Ff2gFoMWxH6lqHqfEATP0c1VmnI3mY/K8=",
+              "id": "1330983264905395",
+              "voice": false
+            }
+          }
+        ],
+        "field": "messages"
+      }
+    ]
   },
-  "id": "oRRPmPg1J9H2XNW1",
-  "tags": []
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "555b9feef83f5fcd1693e8a617a99db5f30d9c62ea89e49a817deaf4167948b9"
+  }
 }
