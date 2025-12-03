@@ -1,0 +1,190 @@
+{
+  "name": "CRIAR TABELAS",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Opcional\n\n",
+        "height": 272,
+        "width": 672
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        560,
+        272
+      ],
+      "id": "3da221fb-a389-46b7-a5da-375c9026c0a9",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Obrigatório\n\n",
+        "height": 272,
+        "width": 912,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        272
+      ],
+      "id": "ba5e1179-aa6c-47b4-ae72-26f39a33f800",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- 2. Tabela de Memória da IA (Corrigida para snake_case)\nCREATE TABLE IF NOT EXISTS ai_chat_memory (\n    \"id\" uuid NOT NULL DEFAULT gen_random_uuid(),\n    \"session_id\" varchar NOT NULL, -- Corrigido de sessionId para session_id\n    \"message\" jsonb NOT NULL,\n    \"addedOn\" timestamp NOT NULL DEFAULT now(),\n    CONSTRAINT \"PK_ai_chat_memory\" PRIMARY KEY (\"id\")\n);\nCREATE INDEX IF NOT EXISTS \"IDX_session_id\" ON ai_chat_memory (\"session_id\");\n\n-- 3. Tabela de Controle de Inatividade (Leve)\nCREATE TABLE IF NOT EXISTS chat_messages (\n    id SERIAL PRIMARY KEY,\n    session_id VARCHAR(30) NOT NULL,\n    role VARCHAR(10) NOT NULL,\n    sent_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),\n    rechamada BOOLEAN DEFAULT FALSE\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        240,
+        320
+      ],
+      "id": "5a114f15-c45e-451b-bc64-8ad7a3db17b7",
+      "name": "CRIAR AS 2 TABELAS",
+      "credentials": {
+        "postgres": {
+          "id": "eFUWrbhHc04hWN2o",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE EXTENSION IF NOT EXISTS vector;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        432,
+        320
+      ],
+      "id": "94f12252-29c0-462f-8478-d19bfcc31f07",
+      "name": "CRIAR EXTENSÃO VECTOR",
+      "credentials": {
+        "postgres": {
+          "id": "eFUWrbhHc04hWN2o",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM ai_chat_memory;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        784,
+        320
+      ],
+      "id": "777ae5e7-f191-4340-ac58-d40da749d128",
+      "name": "deletar dados da ai_chat_memory",
+      "credentials": {
+        "postgres": {
+          "id": "eFUWrbhHc04hWN2o",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM chat_messages;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        608,
+        320
+      ],
+      "id": "9bcdff94-4d66-4977-8e2c-70f35e4aa1a0",
+      "name": "deletar dados da tabela chat_messages",
+      "credentials": {
+        "postgres": {
+          "id": "eFUWrbhHc04hWN2o",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        16,
+        320
+      ],
+      "id": "c0c483cb-373d-49d1-992c-83c069f2571f",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "CRIAR AS 2 TABELAS": {
+      "main": [
+        [
+          {
+            "node": "CRIAR EXTENSÃO VECTOR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "CRIAR AS 2 TABELAS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CRIAR EXTENSÃO VECTOR": {
+      "main": [
+        [
+          {
+            "node": "deletar dados da tabela chat_messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "deletar dados da tabela chat_messages": {
+      "main": [
+        [
+          {
+            "node": "deletar dados da ai_chat_memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d7c680af-6841-464b-82e0-c30ac4c1cef1",
+  "meta": {
+    "instanceId": "c4a8578c63c32def82afaf167073afbb2ff5663c9fb26d8303c645b81983a736"
+  },
+  "id": "dMQJ1Bzu94RqLrRN",
+  "tags": []
+}

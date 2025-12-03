@@ -1,89 +1,101 @@
 services:
-  n8n:
-    image: docker.n8n.io/n8nio/n8n:1.119.2
-    container_name: chatbot-layon-n8n
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: n8n-local-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: n8n
+      POSTGRES_USER: n8n
+      POSTGRES_PASSWORD: n8n123
+      TZ: America/Sao_Paulo
+    ports:
+      - "5432:5432" # Aberto para você conectar o DBeaver
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data
+    networks:
+      - n8n-local-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: n8n-local-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379" # Aberto para debug se precisar
+    volumes:
+      - local_redis_data:/data
+    networks:
+      - n8n-local-network
+
+  n8n-editor:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: n8n-local-editor
     restart: unless-stopped
     ports:
       - "5678:5678"
     environment:
       - N8N_HOST=localhost
-      - WEBHOOK_URL=http://localhost:5678
+      - WEBHOOK_URL=http://localhost:5678/
       - GENERIC_TIMEZONE=America/Sao_Paulo
-      - N8N_LOG_LEVEL=debug
-      - N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true
-      - N8N_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMjEyMjMyMi1lNGU1LTQyMzItOWI5Mi1lMDQxMWEzYmFiMmMiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYwODg3MjIwLCJleHAiOjE3NjM0MzQ4MDB9.3RBTfRL7QMXSRwpqqPz8lpVCoKuqUHw4Z_y3sN78aac
-      - N8N_PUBLIC_API_DISABLED=false
-      - N8N_PUBLIC_API_ENDPOINT=api
-      - MONGODB_URI=mongodb://n8n:n8n123@chatbot-layon-mongodb:27017/?authSource=admin
-    volumes:
-      - chatbot_layon_n8n_data:/home/node/.n8n
-      # Monta a pasta local com os documentos para dentro do container
-      # Importante: use barras normais (/) mesmo no Windows
-      - c:/Users/po442/OneDrive/Desktop/Nova pasta:/data
-    networks:
-      - lanchonete-network
+      - TZ=America/Sao_Paulo
+      
+      # Conexão Banco
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=n8n123
 
-  n8n-mcp:
-    image: ghcr.io/czlonkowski/n8n-mcp:latest
-    container_name: chatbot-layon-n8n-mcp
-    restart: unless-stopped
-    environment:
-      - MCP_MODE=sse
-      - N8N_API_URL=http://chatbot-layon-n8n:5678
-      - N8N_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMjEyMjMyMi1lNGU1LTQyMzItOWI5Mi1lMDQxMWEzYmFiMmMiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYwODg3MjIwLCJleHAiOjE3NjM0MzQ4MDB9.3RBTfRL7QMXSRwpqqPz8lpVCoKuqUHw4Z_y3sN78aac
-      - LOG_LEVEL=info
-    ports:
-      - "3001:3001"
+      # Queue Mode (Simulando a produção)
+      - EXECUTIONS_MODE=queue
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      
+      - N8N_RUNNERS_ENABLED=true
+      - OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS=true
+      
+      # Chave fixa para facilitar o teste local (não use em prod!)
+      - N8N_ENCRYPTION_KEY=chave-secreta-local-123
+    volumes:
+      - local_n8n_data:/home/node/.n8n
     networks:
-      - lanchonete-network
+      - n8n-local-network
     depends_on:
-      - n8n
+      - postgres
+      - redis
 
-  postgres:
-    image: postgres:15
-    container_name: chatbot-layon-postgres
+  n8n-worker:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: n8n-local-worker
     restart: unless-stopped
+    command: worker --concurrency=5
     environment:
-      - POSTGRES_DB=n8n
-      - POSTGRES_USER=n8n
-      - POSTGRES_PASSWORD=n8n123
-    ports:
-      - "5432:5432"
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+      - TZ=America/Sao_Paulo
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=n8n123
+      - EXECUTIONS_MODE=queue
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_ENCRYPTION_KEY=chave-secreta-local-123
     volumes:
-      - chatbot_layon_postgres_data:/var/lib/postgresql/data
+      - local_n8n_data:/home/node/.n8n
     networks:
-      - lanchonete-network
+      - n8n-local-network
+    depends_on:
+      - postgres
+      - redis
 
-  redis:
-    image: redis/redis-stack-server:latest
-    container_name: chatbot-layon-redis
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    volumes:
-      - chatbot_layon_redis_data:/data
-    networks:
-      - lanchonete-network
-
-  mongodb:
-    image: mongo:7.0
-    container_name: chatbot-layon-mongodb
-    restart: unless-stopped
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=n8n
-      - MONGO_INITDB_ROOT_PASSWORD=n8n123
-    ports:
-      - "27017:27017"
-    volumes:
-      - chatbot_layon_mongodb_data:/data/db
-    networks:
-      - lanchonete-network
 volumes:
-  chatbot_layon_n8n_data:
-  chatbot_layon_postgres_data:
-  chatbot_layon_redis_data:
-  chatbot_layon_mongodb_data:
+  local_n8n_data:
+  local_postgres_data:
+  local_redis_data:
 
 networks:
-  lanchonete-network:
+  n8n-local-network:
     driver: bridge
