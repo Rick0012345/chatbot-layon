@@ -4,28 +4,6 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "CREATE TABLE chat_messages (\n    id SERIAL PRIMARY KEY,\n    session_id VARCHAR(30) NOT NULL,   -- agora já no tipo correto\n    role VARCHAR(10) NOT NULL,\n    sent_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),\n    rechamada BOOLEAN DEFAULT FALSE\n);\n",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        304,
-        352
-      ],
-      "id": "d6d14886-87a2-4461-ac17-4bd3c6259b9a",
-      "name": "CRIAR TABELAS",
-      "credentials": {
-        "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
-          "name": "Postgres account"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
         "query": "DELETE FROM chat_messages;",
         "options": {}
       },
@@ -37,28 +15,6 @@
       ],
       "id": "e3cf4423-97a0-4c7d-a3be-664a6e6a0e0b",
       "name": "deletar dados da tabela",
-      "credentials": {
-        "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
-          "name": "Postgres account"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "CREATE TABLE IF NOT EXISTS ai_chat_memory (\n    -- 1. Identidade Única da linha\n    \"id\" uuid NOT NULL DEFAULT gen_random_uuid(),\n    -- 2. O \"Crachá\" do Cliente (Número do WhatsApp)\n    \"session_id\" varchar NOT NULL,\n    -- 3. A Conversa em si (O Segredo)\n    \"message\" jsonb NOT NULL,\n    -- 4. O Relógio (Para limpar depois)\n    \"addedOn\" timestamp NOT NULL DEFAULT now(),\n    -- 5. A Chave Mestra\n    CONSTRAINT \"PK_ai_chat_memory\" PRIMARY KEY (\"id\")\n);\n-- 6. O Turbo (Índice)\nCREATE INDEX IF NOT EXISTS \"IDX_session_id\" ON ai_chat_memory (\"sessionId\");",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        512,
-        352
-      ],
-      "id": "75c3d4df-e549-46c4-be4b-fdd424c59f37",
-      "name": "CRIAR TABELA MEMORIA1",
       "credentials": {
         "postgres": {
           "id": "xuRQB5TEFKG7llQu",
@@ -104,7 +60,7 @@
         "text": "={{ $('edit text').item.json.text || $('edit audio').item.json.text || $('edit image').item.json.text || $('edit document').item.json.text }}",
         "hasOutputParser": true,
         "options": {
-          "systemMessage": "=Você é Layon, consultor sênior da UP Designer.\nSua missão: Guiar o cliente desde a dúvida até o fechamento do contrato, usando o Método de Venda Consultiva.\nTom de voz: Especialista, Empático, Seguro e Energético (Use emojis moderados: 🚀, ✅, 🤝).\n\n🚨 BASE DE CONHECIMENTO (RAG):\n- Use a ferramenta 'Postgres PGVector Store' para buscar detalhes técnicos, preços exatos e links de pagamento.\n- NUNCA invente preços ou links.\n\n🎯 FLUXO DE VENDAS OBRIGATÓRIO (Siga passo a passo):\n\nETAPA 1: COLETA INICIAL (Diagnóstico)\n- Se for o primeiro contato: \"Opa! Que demais ter você aqui. Sou o Layon da UP Designer! 🚀 Pra eu te ajudar do jeito certo, me conta: Você já tem um logotipo ou está começando do zero? Se já tiver, qual é o nome da sua marca?\"\n\nETAPA 2: ANÁLISE CRÍTICA (O Pulo do Gato)\n- CENÁRIO A (Já tem logo): Peça para ver (ou descrever). Critique construtivamente (ex: \"Entendi. Olha, para o seu nicho, essa logo atual pode estar passando pouca credibilidade. A gente precisa modernizar isso para você vender mais!\"). Dê esperança: \"A boa notícia é que dá para transformar isso numa marca premium.\"\n- CENÁRIO B (Não tem logo): \"Perfeito! Começar do zero é a melhor forma de fazer certo. Me conta um pouco mais sobre o seu negócio e o público que você quer atingir.\"\n\nETAPA 3: A SOLUÇÃO E A METODOLOGIA (Gatilho de Autoridade)\n- Apresente a solução (Base da Logo) e PEÇA PERMISSÃO para explicar como funciona:\n- \"Posso te explicar rapidinho como a nossa metodologia garante a sua segurança e o resultado perfeito?\"\n- Se o cliente deixar, diga (texto obrigatório):\n  \"A gente trabalha com contrato, assegurando juridicamente você. Todo pagamento é via Mercado Pago (100% seguro). E o melhor: oferecemos **Edições Ilimitadas** até a arte ficar exatamente como você sonhou! 🤝\"\n\nETAPA 4: OFERTA E PREÇO\n- Pergunte se ficou alguma dúvida. Se não, apresente os planos.\n- NÃO ofereça só o Prata. Mostre as opções (Bronze, Prata, Ouro) buscando na Base de Conhecimento, mas destaque o que melhor atende o objetivo dele.\n- Ex: \"Para o resultado X que você quer, o Plano Ouro é o mais completo, mas o Prata já resolve Y...\"\n\nETAPA 5: FECHAMENTO (O \"Check-Mate\")\n- O cliente escolheu? Pergunte: \"Posso gerar o link seguro do Mercado Pago para a gente iniciar o projeto agora?\"\n- Se ele disser sim, busque o link exato na Base de Conhecimento e envie.\n\n🛡️ REGRAS TÉCNICAS:\n- Use a ferramenta 'format_final_json_response' para responder.\n- Máximo 2 parágrafos curtos por mensagem. Não seja textão.\n- Se o cliente fugir do assunto, traga ele de volta para a ETAPA atual.",
+          "systemMessage": "=Você é Layon, consultor sênior da UP Designer.\nSua missão: Guiar o cliente desde a dúvida até o fechamento do contrato, usando o Método de Venda Consultiva.\nTom de voz: Especialista, Empático, Seguro e Energético (Use emojis moderados: 🚀, ✅, 🤝).\n\n🚨 REGRAS DE OURO (RAG & SCRIPT):\n1. O 'Postgres PGVector Store' é para PREÇOS e LINKS.\n2. SCRIPT FIXO > RAG: Se o prompt manda dizer uma frase específica, DIGA ELA. Não busque alternativas.\n3. EFICIÊNCIA: Ao buscar, use o primeiro resultado. Não refine.\n\n🎯 FLUXO DE VENDAS (Siga a sequência lógica):\n\nETAPA 1: COLETA INICIAL (Diagnóstico)\n- Se for início: \"Opa! Que demais ter você aqui. Sou o Layon da UP Designer! 🚀 Pra eu te ajudar do jeito certo, me conta: Você já tem um logotipo ou está começando do zero?\"\n\nETAPA 2: ANÁLISE CRÍTICA (Validação)\n- VERIFIQUE O HISTÓRICO: O cliente já falou do negócio? Se SIM, pule para a ETAPA 3.\n- Se não tem logo: \"Perfeito! Começar do zero é a melhor forma de fazer certo. Me conta um pouco mais sobre o seu negócio e o público que você quer atingir.\"\n- Se tem logo: Peça para ver e critique construtivamente.\n\nETAPA 3: A METODOLOGIA (SCRIPT OBRIGATÓRIO + CTA)\n- O cliente explicou o negócio? Valide (ex: \"Entendi, para flores precisa ser delicado...\").\n- Em seguida, diga: \"Posso te explicar rapidinho como a nossa metodologia garante a sua segurança e o resultado perfeito?\"\n- Se o cliente disser \"Sim/Pode\":\n  ⚠️ NÃO BUSQUE NO BANCO DE DADOS. USE EXATAMENTE AS DUAS MENSAGENS ABAIXO:\n  Mensagem 1: \"A gente trabalha com contrato, assegurando juridicamente você. Todo pagamento é via Mercado Pago ou Cakto (100% seguro). E o melhor: oferecemos **Edições Ilimitadas** até a arte ficar exatamente como você sonhou! 🤝\"\n  Mensagem 2: \"Ficou alguma dúvida sobre a segurança, ou posso te apresentar nossos planos (Bronze, Prata e Ouro)?\"\n\nETAPA 4: OFERTA E PREÇO (AGORA USE O RAG)\n- Se o cliente disser \"Pode mostrar\" ou \"Quero ver os planos\":\n  1. BUSQUE NO RAG POR: \"Resumo Planos Bronze Prata Ouro\".\n  2. Apresente os 3 planos de forma resumida e persuasiva (Não jogue apenas texto seco).\n  3. Termine perguntando: \"Qual desses combina mais com o momento atual da [Nome da Empresa/Negócio]?\"\n\nETAPA 5: FECHAMENTO\n- Cliente escolheu? Pergunte: \"Posso gerar o link seguro para iniciarmos agora?\"\n- Se \"Sim\": Busque no RAG por \"Link Pagamento [Nome do Plano]\" e envie.\n\n🛡️ REGRAS TÉCNICAS (JSON PURO):\n- Responda APENAS com o JSON. Sem markdown, sem chave \"output\".\n- Se precisar mandar duas mensagens seguidas (como na Etapa 3), use o array:\n  {\n    \"mensagens\": [\"Texto da Metodologia...\", \"Texto do CTA (Posso mostrar os planos?)\"],\n    \"acao_sugerida\": \"continuar\"\n  }",
           "maxIterations": 3
         }
       },
@@ -153,7 +109,7 @@
       "name": "Embeddings OpenAI",
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "position": [
-        768,
+        976,
         1968
       ],
       "typeVersion": 1.2,
@@ -170,7 +126,7 @@
       "name": "When clicking \"Execute Workflow\"",
       "type": "n8n-nodes-base.manualTrigger",
       "position": [
-        -64,
+        -576,
         1728
       ],
       "typeVersion": 1
@@ -194,7 +150,7 @@
       "name": "Document Section Loader",
       "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
       "position": [
-        160,
+        368,
         1936
       ],
       "typeVersion": 1
@@ -211,7 +167,7 @@
       "name": "Document Chunker",
       "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
       "position": [
-        112,
+        320,
         2064
       ],
       "typeVersion": 1
@@ -225,7 +181,7 @@
       "name": "Google Docs Importer",
       "type": "n8n-nodes-base.googleDocs",
       "position": [
-        160,
+        368,
         1728
       ],
       "typeVersion": 2,
@@ -814,12 +770,12 @@
       "parameters": {
         "content": "## ATUALIZAR MEMÓRIA DO BANCO VETORIAL COM DOCUMENTO RAG",
         "height": 560,
-        "width": 1152,
+        "width": 1600,
         "color": 4
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -224,
+        -672,
         1632
       ],
       "typeVersion": 1,
@@ -1293,7 +1249,7 @@
         "where": {
           "values": [
             {
-              "column": "sessionId",
+              "column": "session_id",
               "value": "={{$('WhatsApp Trigger').first().json.messages[0].from}}"
             }
           ]
@@ -1318,7 +1274,7 @@
     {
       "parameters": {
         "mode": "retrieve-as-tool",
-        "toolDescription": "Banco de dados de Preços, Links de Pagamento e Argumentos de Venda.\nSempre que precisar saber um valor, um link ou o que está incluso no plano, consulte aqui.\nContém a URL exata para pagamento.",
+        "toolDescription": "Banco de dados OFICIAL da UP Designer (Fonte da Verdade).\nUse para buscar:\n1. Preços, Itens Inclusos e Diferenças entre Planos (Bronze, Prata, Ouro e Avulsos).\n2. Links de Pagamento EXATOS (URLs da Cakto).\n3. Metodologia de Trabalho, Prazos e Dados de Segurança (CNPJ).\n⚠️ REGRA DE OURO: Faça APENAS UMA busca focada. As informações retornadas são completas e definitivas. NÃO refaça a busca.",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
@@ -1344,7 +1300,7 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
       "typeVersion": 1.3,
       "position": [
-        368,
+        576,
         1728
       ],
       "id": "959b1a8c-442d-450c-81cd-659f000a899f",
@@ -1759,7 +1715,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        720,
+        288,
         352
       ],
       "id": "8ffd1df4-e684-4fa9-bb03-03382c344c7b",
@@ -1771,6 +1727,69 @@
         }
       },
       "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM chat_messages;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -304,
+        1728
+      ],
+      "id": "d9d77096-825d-495b-a3ea-363a88797436",
+      "name": "deletar dados da tabela2",
+      "credentials": {
+        "postgres": {
+          "id": "xuRQB5TEFKG7llQu",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM ai_chat_memory;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -80,
+        1728
+      ],
+      "id": "16cfba6d-a16e-4dc1-bc53-2d6a1d4ab79b",
+      "name": "deletar dados da tabela3",
+      "credentials": {
+        "postgres": {
+          "id": "xuRQB5TEFKG7llQu",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM n8n_vectors;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        144,
+        1728
+      ],
+      "id": "1129539f-82f5-4b68-a79a-f0da75e42929",
+      "name": "Deletar documentos RAG",
+      "credentials": {
+        "postgres": {
+          "id": "xuRQB5TEFKG7llQu",
+          "name": "Postgres account"
+        }
+      }
     }
   ],
   "pinData": {
@@ -1928,7 +1947,7 @@
               "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYFjNFQjBGN0FFRDZGMkQwOEMzMDY4RkYA",
               "timestamp": "1764423313",
               "text": {
-                "body": "Olá quero mais informações"
+                "body": "esses planos i estão caros q vc mostrou"
               },
               "type": "text"
             }
@@ -1976,7 +1995,7 @@
       "main": [
         [
           {
-            "node": "Google Docs Importer",
+            "node": "deletar dados da tabela2",
             "type": "main",
             "index": 0
           }
@@ -2522,13 +2541,46 @@
           }
         ]
       ]
+    },
+    "deletar dados da tabela2": {
+      "main": [
+        [
+          {
+            "node": "deletar dados da tabela3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "deletar dados da tabela3": {
+      "main": [
+        [
+          {
+            "node": "Deletar documentos RAG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deletar documentos RAG": {
+      "main": [
+        [
+          {
+            "node": "Google Docs Importer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "fb944459-300b-468f-9de7-bb4af982dc89",
+  "versionId": "d88b4523-d1b3-4408-a054-2d5bf6fbac0f",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "c4a8578c63c32def82afaf167073afbb2ff5663c9fb26d8303c645b81983a736"
