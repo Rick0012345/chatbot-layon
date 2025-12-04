@@ -10,14 +10,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        96,
-        64
+        -624,
+        -160
       ],
-      "id": "e3cf4423-97a0-4c7d-a3be-664a6e6a0e0b",
+      "id": "e56a052d-8e6b-4927-8233-558cda4adc49",
       "name": "deletar dados da tabela",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       },
@@ -32,10 +32,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        0,
-        0
+        -720,
+        -224
       ],
-      "id": "4aea30b5-a8fe-4aa4-9804-c3ca208419d9",
+      "id": "332186a5-32da-40fc-9aa6-75d52fafb10a",
       "name": "Sticky Note"
     },
     {
@@ -48,10 +48,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        0,
-        272
+        -720,
+        48
       ],
-      "id": "232debd0-c52e-4159-8d30-1481ed8adf01",
+      "id": "602ebf8f-132f-441b-ba32-2af109203f49",
       "name": "Sticky Note1"
     },
     {
@@ -60,16 +60,16 @@
         "text": "={{ $('edit text').item.json.text || $('edit audio').item.json.text || $('edit image').item.json.text || $('edit document').item.json.text }}",
         "hasOutputParser": true,
         "options": {
-          "systemMessage": "=Você é Layon, consultor sênior da UP Designer.\nSua missão: Guiar o cliente desde a dúvida até o fechamento do contrato, usando o Método de Venda Consultiva.\nTom de voz: Especialista, Empático, Seguro e Energético (Use emojis moderados: 🚀, ✅, 🤝).\n\n🚨 REGRAS DE OURO (RAG & SCRIPT):\n1. O 'Postgres PGVector Store' é para PREÇOS e LINKS.\n2. SCRIPT FIXO > RAG: Se o prompt manda dizer uma frase específica, DIGA ELA. Não busque alternativas.\n3. EFICIÊNCIA: Ao buscar, use o primeiro resultado. Não refine.\n\n🎯 FLUXO DE VENDAS (Siga a sequência lógica):\n\nETAPA 1: COLETA INICIAL (Diagnóstico)\n- Se for início: \"Opa! Que demais ter você aqui. Sou o Layon da UP Designer! 🚀 Pra eu te ajudar do jeito certo, me conta: Você já tem um logotipo ou está começando do zero?\"\n\nETAPA 2: ANÁLISE CRÍTICA (Validação)\n- VERIFIQUE O HISTÓRICO: O cliente já falou do negócio? Se SIM, pule para a ETAPA 3.\n- Se não tem logo: \"Perfeito! Começar do zero é a melhor forma de fazer certo. Me conta um pouco mais sobre o seu negócio e o público que você quer atingir.\"\n- Se tem logo: Peça para ver e critique construtivamente.\n\nETAPA 3: A METODOLOGIA (SCRIPT OBRIGATÓRIO + CTA)\n- O cliente explicou o negócio? Valide (ex: \"Entendi, para flores precisa ser delicado...\").\n- Em seguida, diga: \"Posso te explicar rapidinho como a nossa metodologia garante a sua segurança e o resultado perfeito?\"\n- Se o cliente disser \"Sim/Pode\":\n  ⚠️ NÃO BUSQUE NO BANCO DE DADOS. USE EXATAMENTE AS DUAS MENSAGENS ABAIXO:\n  Mensagem 1: \"A gente trabalha com contrato, assegurando juridicamente você. Todo pagamento é via Mercado Pago ou Cakto (100% seguro). E o melhor: oferecemos **Edições Ilimitadas** até a arte ficar exatamente como você sonhou! 🤝\"\n  Mensagem 2: \"Ficou alguma dúvida sobre a segurança, ou posso te apresentar nossos planos (Bronze, Prata e Ouro)?\"\n\nETAPA 4: OFERTA E PREÇO (AGORA USE O RAG)\n- Se o cliente disser \"Pode mostrar\" ou \"Quero ver os planos\":\n  1. BUSQUE NO RAG POR: \"Resumo Planos Bronze Prata Ouro\".\n  2. Apresente os 3 planos de forma resumida e persuasiva (Não jogue apenas texto seco).\n  3. Termine perguntando: \"Qual desses combina mais com o momento atual da [Nome da Empresa/Negócio]?\"\n\nETAPA 5: FECHAMENTO\n- Cliente escolheu? Pergunte: \"Posso gerar o link seguro para iniciarmos agora?\"\n- Se \"Sim\": Busque no RAG por \"Link Pagamento [Nome do Plano]\" e envie.\n\n🛡️ REGRAS TÉCNICAS (JSON PURO):\n- Responda APENAS com o JSON. Sem markdown, sem chave \"output\".\n- Se precisar mandar duas mensagens seguidas (como na Etapa 3), use o array:\n  {\n    \"mensagens\": [\"Texto da Metodologia...\", \"Texto do CTA (Posso mostrar os planos?)\"],\n    \"acao_sugerida\": \"continuar\"\n  }",
+          "systemMessage": "=Você é Layon, consultor sênior da UP Designer.\nSua missão: Guiar o cliente desde a dúvida até o fechamento do contrato, usando o Método de Venda Consultiva.\nTom de voz: Especialista, Empático, Seguro e Energético (Use emojis moderados: 🚀, ✅, 🤝).\n\n🚨 REGRAS DE OURO (RAG & SCRIPT):\n1. O 'Postgres PGVector Store' é para PREÇOS e LINKS.\n2. SCRIPT FIXO > RAG: Se o prompt manda dizer uma frase específica, DIGA ELA. Não busque alternativas.\n3. EFICIÊNCIA: Ao buscar, use o primeiro resultado. Não refine.\n\n🎯 FLUXO DE VENDAS (Siga a sequência lógica):\n\nETAPA 1: COLETA INICIAL (Diagnóstico)\n- Se for início: \"Opa! Que demais ter você aqui. Sou o Layon da UP Designer! 🚀 Pra eu te ajudar do jeito certo, me conta: Você já tem um logotipo ou está começando do zero?\"\n\nETAPA 2: ANÁLISE CRÍTICA (Validação)\n- VERIFIQUE O HISTÓRICO: O cliente já falou do negócio? Se SIM, pule para a ETAPA 3.\n- Se não tem logo: \"Perfeito! Começar do zero é a melhor forma de fazer certo. Me conta um pouco mais sobre o seu negócio e o público que você quer atingir.\"\n- Se tem logo: Peça para ver e critique construtivamente.\n\nETAPA 3: A METODOLOGIA (SCRIPT OBRIGATÓRIO + CTA)\n- O cliente explicou o negócio? Valide (ex: \"Entendi, para flores precisa ser delicado...\").\n- Em seguida, diga: \"Posso te explicar rapidinho como a nossa metodologia garante a sua segurança e o resultado perfeito?\"\n\nETAPA 4: OFERTA E PREÇO (AGORA USE O RAG)\n- Se o cliente disser \"Pode mostrar\" ou \"Quero ver os planos\":\n  1. BUSQUE NO RAG POR: \"Resumo Planos Bronze Prata Ouro\".\n  2. Apresente os 3 planos de forma resumida e persuasiva (Não jogue apenas texto seco).\n  3. Termine perguntando: \"Qual desses combina mais com o momento atual da [Nome da Empresa/Negócio]?\"\n\nETAPA 5: FECHAMENTO\n- Cliente escolheu? Pergunte: \"Posso gerar o link seguro para iniciarmos agora?\"\n- Se \"Sim\": Busque no RAG por \"Link Pagamento [Nome do Plano]\" e envie.\n\n🛡️ REGRAS TÉCNICAS (JSON PURO):\n- Responda APENAS com o JSON. Sem markdown, sem chave \"output\".\n- Se precisar mandar múltiplas mensagens seguidas (ex: Intro + Planos + Pergunta), use o array com até 3 ou 4 mensagens para facilitar a leitura:\n{\n    \"mensagens\": [\n       \"Aqui estão os planos...\", \n       \"Detalhes do Bronze, Prata e Ouro...\", \n       \"Qual desses faz mais sentido para você?\"\n    ],\n    \"acao_sugerida\": \"continuar\"\n  }",
           "maxIterations": 3
         }
       },
-      "id": "d5d8a913-df0b-4c3f-995b-a556b9f5ba47",
+      "id": "39fe8533-5504-484a-af17-7ac6b00a2843",
       "name": "Knowledge Base Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        2240,
-        912
+        1520,
+        688
       ],
       "typeVersion": 1.9,
       "retryOnFail": false,
@@ -79,24 +79,25 @@
       "parameters": {
         "model": {
           "__rl": true,
+          "value": "gpt-4o",
           "mode": "list",
-          "value": "gpt-4o-mini"
+          "cachedResultName": "gpt-4o"
         },
         "options": {
           "temperature": 0.4
         }
       },
-      "id": "2e28a232-eaa0-4338-b47d-9faabaa80269",
+      "id": "a09f7926-95a6-4cd4-981a-724ff0af4049",
       "name": "OpenAI Chat Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        2064,
-        1120
+        1344,
+        896
       ],
       "typeVersion": 1.2,
       "credentials": {
         "openAiApi": {
-          "id": "vBkHHoxqbOBfH5al",
+          "id": "mcydAKDAurhsfaeo",
           "name": "OpenAi account"
         }
       }
@@ -105,29 +106,29 @@
       "parameters": {
         "options": {}
       },
-      "id": "a288013e-a208-483c-bec9-b7105426378f",
+      "id": "45174dbd-1391-4d43-a00e-85436330e5c7",
       "name": "Embeddings OpenAI",
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "position": [
-        976,
-        1968
+        256,
+        1744
       ],
       "typeVersion": 1.2,
       "credentials": {
         "openAiApi": {
-          "id": "vBkHHoxqbOBfH5al",
+          "id": "mcydAKDAurhsfaeo",
           "name": "OpenAi account"
         }
       }
     },
     {
       "parameters": {},
-      "id": "b57d70cc-4023-4604-b287-a1e40e38faa3",
+      "id": "eeae02bd-1ea8-48d6-881b-7351e5d0d4ee",
       "name": "When clicking \"Execute Workflow\"",
       "type": "n8n-nodes-base.manualTrigger",
       "position": [
-        -576,
-        1728
+        -1296,
+        1504
       ],
       "typeVersion": 1
     },
@@ -146,12 +147,12 @@
           }
         }
       },
-      "id": "ca9479f4-af38-4db8-917c-1c48d6f7a2e5",
+      "id": "6adf2612-3c4d-4b16-abd4-e8f1c77ea9f5",
       "name": "Document Section Loader",
       "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
       "position": [
-        368,
-        1936
+        -352,
+        1712
       ],
       "typeVersion": 1
     },
@@ -163,12 +164,12 @@
           "splitCode": "markdown"
         }
       },
-      "id": "4dc86e20-0650-440a-9d09-d8d8839560ef",
+      "id": "1aad09f2-5112-4593-8cf1-37adc7f4ed88",
       "name": "Document Chunker",
       "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
       "position": [
-        320,
-        2064
+        -400,
+        1840
       ],
       "typeVersion": 1
     },
@@ -177,17 +178,17 @@
         "operation": "get",
         "documentURL": "https://docs.google.com/document/d/1SymjSl9JFpu40RDMLO4RIeedSjl-aURnRq9jyiqzAh4/edit?tab=t.0"
       },
-      "id": "b27fa490-a1fa-4bd7-a253-28ddfcc11888",
+      "id": "ac4f1b7d-aeb5-4e59-8555-c3b71f6ef973",
       "name": "Google Docs Importer",
       "type": "n8n-nodes-base.googleDocs",
       "position": [
-        368,
-        1728
+        -352,
+        1504
       ],
       "typeVersion": 2,
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "Vm1kaNgWzPHCtHj2",
+          "id": "SCncN051KvlxSwG0",
           "name": "Google Docs account"
         }
       }
@@ -198,17 +199,17 @@
         "operation": "transcribe",
         "options": {}
       },
-      "id": "277cb35b-369f-495a-9a59-3823ccbb9c3c",
+      "id": "f012caa4-0848-4830-9761-de6ef8e1ccfe",
       "name": "OpenAI",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "position": [
-        1056,
-        976
+        336,
+        752
       ],
       "typeVersion": 1.8,
       "credentials": {
         "openAiApi": {
-          "id": "vBkHHoxqbOBfH5al",
+          "id": "mcydAKDAurhsfaeo",
           "name": "OpenAi account"
         }
       }
@@ -229,17 +230,17 @@
           "detail": "auto"
         }
       },
-      "id": "1a534feb-a9cb-4f3d-87ac-964f6b07bdb5",
+      "id": "40e4f3f1-1c56-412c-9675-d83019416013",
       "name": "OpenAI1",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "position": [
-        1056,
-        1152
+        336,
+        928
       ],
       "typeVersion": 1.8,
       "credentials": {
         "openAiApi": {
-          "id": "vBkHHoxqbOBfH5al",
+          "id": "mcydAKDAurhsfaeo",
           "name": "OpenAi account"
         }
       }
@@ -249,12 +250,12 @@
         "operation": "pdf",
         "options": {}
       },
-      "id": "1193dea7-c6a9-4fd2-8cf1-072c31acd53b",
+      "id": "bb0d742b-d86c-4113-8a14-2d60b1804c32",
       "name": "Extract from PDF",
       "type": "n8n-nodes-base.extractFromFile",
       "position": [
-        1472,
-        1360
+        752,
+        1136
       ],
       "typeVersion": 1
     },
@@ -262,12 +263,12 @@
       "parameters": {
         "jsCode": "let requests = $(\"Download Document\").all()\n\nrequests.forEach((request) => {\n  let mime_type = request.json.mime_type\n\n  if (\n    mime_type === \"text/calendar\" || \n    mime_type === \"application/ics\" || \n    mime_type === \"text/x-calendar\"\n  ) {\n    request.json.mime_type = \"mapped/calendar\"\n  }\n\n  if (\n    mime_type === \"application/xml\" || \n    mime_type === \"text/xml\") {\n    request.json.mime_type = \"mapped/xml\"\n  }\n\n  if (!mime_type) {\n    request.json.mime_type = $('Gets WhatsApp Document Source URL').first().json.mime_type\n  }\n})\n\nreturn requests;"
       },
-      "id": "6a3c6b9d-f2ba-4f65-a842-4a6d9f8961ab",
+      "id": "bff22a50-acfe-4b2b-b44f-55b60e162e38",
       "name": "Map file extensions",
       "type": "n8n-nodes-base.code",
       "position": [
-        1056,
-        1344
+        336,
+        1120
       ],
       "typeVersion": 2
     },
@@ -277,18 +278,18 @@
         "operation": "mediaUrlGet",
         "mediaGetId": "={{ $json.messages[0].audio.id}}"
       },
-      "id": "e1278364-7ef2-42d0-aa65-027b3a33f461",
+      "id": "ffde777e-d411-44dc-8943-5252455631f4",
       "name": "Gets WhatsApp Voicemail Source URL",
       "type": "n8n-nodes-base.whatsApp",
       "position": [
-        608,
-        976
+        -112,
+        752
       ],
       "webhookId": "bbe62f3d-8788-49d4-aae6-9e9411446d44",
       "typeVersion": 1,
       "credentials": {
         "whatsAppApi": {
-          "id": "6ZIW2mF2dU6Sb33x",
+          "id": "8NsIsTFbtfE2cumZ",
           "name": "WhatsApp account"
         }
       }
@@ -299,18 +300,18 @@
         "operation": "mediaUrlGet",
         "mediaGetId": "={{ $json.messages[0].image.id }}"
       },
-      "id": "ace98b4a-f3c8-430e-9045-681667d07f54",
+      "id": "d9471a35-2dd1-4c77-a4e8-204d3cdc8300",
       "name": "Gets WhatsApp Image Source URL",
       "type": "n8n-nodes-base.whatsApp",
       "position": [
-        608,
-        1152
+        -112,
+        928
       ],
       "webhookId": "c2982df4-1d8d-4669-a724-44ae17d11e6c",
       "typeVersion": 1,
       "credentials": {
         "whatsAppApi": {
-          "id": "6ZIW2mF2dU6Sb33x",
+          "id": "8NsIsTFbtfE2cumZ",
           "name": "WhatsApp account"
         }
       }
@@ -321,18 +322,18 @@
         "operation": "mediaUrlGet",
         "mediaGetId": "={{ $json.messages[0].document.id }}"
       },
-      "id": "1bf2c445-5f9b-43d3-ab41-30050a5822dd",
+      "id": "5301ed77-1fe0-49b8-8d92-f2ff1472969e",
       "name": "Gets WhatsApp Document Source URL",
       "type": "n8n-nodes-base.whatsApp",
       "position": [
-        608,
-        1344
+        -112,
+        1120
       ],
       "webhookId": "c2982df4-1d8d-4669-a724-44ae17d11e6c",
       "typeVersion": 1,
       "credentials": {
         "whatsAppApi": {
-          "id": "6ZIW2mF2dU6Sb33x",
+          "id": "8NsIsTFbtfE2cumZ",
           "name": "WhatsApp account"
         }
       }
@@ -344,17 +345,17 @@
         "genericAuthType": "httpHeaderAuth",
         "options": {}
       },
-      "id": "ed70ea98-1336-4f95-af4c-db1dd6af66e8",
+      "id": "b31e23d8-0b3d-42b4-a773-fe9019db2750",
       "name": "Download Voicemail",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        848,
-        976
+        128,
+        752
       ],
       "typeVersion": 4.2,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "rQWwp0yOW5P8xXns",
+          "id": "qNGyOOimfrnxpJrs",
           "name": "Header Auth account"
         }
       }
@@ -366,17 +367,17 @@
         "genericAuthType": "httpHeaderAuth",
         "options": {}
       },
-      "id": "83f02f6f-7916-482e-82e4-b52f3ca056d1",
+      "id": "e29327a8-16da-40a7-820c-6228125bb375",
       "name": "Download Image",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        848,
-        1152
+        128,
+        928
       ],
       "typeVersion": 4.2,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "rQWwp0yOW5P8xXns",
+          "id": "qNGyOOimfrnxpJrs",
           "name": "Header Auth account"
         }
       }
@@ -392,17 +393,17 @@
           }
         }
       },
-      "id": "033bf911-bbe6-44e2-adc6-32ca93ffdae6",
+      "id": "fe10582b-b2ba-4277-a1da-e2d55d21b451",
       "name": "Download Document",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        848,
-        1344
+        128,
+        1120
       ],
       "typeVersion": 4.2,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "rQWwp0yOW5P8xXns",
+          "id": "qNGyOOimfrnxpJrs",
           "name": "Header Auth account"
         }
       }
@@ -514,12 +515,12 @@
         },
         "options": {}
       },
-      "id": "1f2c7323-e394-4f62-b9ff-99976cfcf30e",
+      "id": "005bd72e-bb8e-4bfd-9ebc-13a563f54f0c",
       "name": "Route Types",
       "type": "n8n-nodes-base.switch",
       "position": [
-        192,
-        944
+        -528,
+        720
       ],
       "typeVersion": 3.2
     },
@@ -606,12 +607,12 @@
         },
         "options": {}
       },
-      "id": "22af538f-a406-4794-8b00-543497a0061b",
+      "id": "15b38f50-5fd2-40f4-adf2-ca03deba0dde",
       "name": "Route Document Types",
       "type": "n8n-nodes-base.switch",
       "position": [
-        1264,
-        1328
+        544,
+        1104
       ],
       "typeVersion": 3.2
     },
@@ -623,18 +624,18 @@
         "textBody": "=Não trabalhamos com esse tipo de arquivo, poderia enviar no formato PDF ou texto?",
         "additionalFields": {}
       },
-      "id": "0b599d42-d42f-414d-a6f7-e34f4e8ee8da",
+      "id": "644daec2-fa31-406a-97cf-a77f96854211",
       "name": "Send Unsupported Response",
       "type": "n8n-nodes-base.whatsApp",
       "position": [
-        1488,
-        1536
+        768,
+        1312
       ],
       "webhookId": "017d267f-4897-4726-bf03-304ef10352bf",
       "typeVersion": 1,
       "credentials": {
         "whatsAppApi": {
-          "id": "6ZIW2mF2dU6Sb33x",
+          "id": "8NsIsTFbtfE2cumZ",
           "name": "WhatsApp account"
         }
       }
@@ -646,10 +647,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        4144,
-        896
+        3424,
+        672
       ],
-      "id": "7ef10d08-ecdf-4c8f-b7a4-5d7a6acb6d71",
+      "id": "3f4385a4-de6e-4f31-9151-7a95963a81df",
       "name": "Loop Over Items1"
     },
     {
@@ -680,10 +681,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4528,
-        1088
+        3808,
+        864
       ],
-      "id": "500e9700-4f6a-4167-b1a9-5284f025dd0e",
+      "id": "84ea1468-97c6-42e2-a9af-5f5b4505f501",
       "name": "If"
     },
     {
@@ -693,10 +694,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2656,
-        912
+        1936,
+        688
       ],
-      "id": "808c1dee-2a26-4b4c-8499-6c91313757f0",
+      "id": "834a1d1c-ea45-4357-9125-b58dea053859",
       "name": "Processar Saída do Agente"
     },
     {
@@ -706,10 +707,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3920,
-        896
+        3200,
+        672
       ],
-      "id": "92095463-f769-49e1-bcee-fde6db732753",
+      "id": "8661dbee-44e1-4b5d-b540-212654c6a08c",
       "name": "Preparar Mensagens para Loop"
     },
     {
@@ -719,26 +720,26 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4368,
-        1088
+        3648,
+        864
       ],
-      "id": "492d5448-4d75-48da-a289-f8e45621fb1d",
+      "id": "08342ae2-ef29-4f4f-9373-cfdf2780d790",
       "name": "Detectar Links Pagamento"
     },
     {
       "parameters": {
         "schemaType": "manual",
-        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"mensagens\": {\n      \"type\": \"array\",\n      \"description\": \"Lista exata de mensagens de texto para o WhatsApp.\",\n      \"items\": {\n        \"type\": \"string\",\n        \"description\": \"Texto da mensagem. Sem emojis soltos.\"\n      },\n      \"minItems\": 1,\n      \"maxItems\": 2\n    },\n    \"acao_sugerida\": {\n      \"type\": \"string\",\n      \"enum\": [\"continuar\", \"fechar_venda\"],\n      \"description\": \"Status da conversa.\"\n    }\n  },\n  \"required\": [\"mensagens\"]\n}",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"mensagens\": {\n      \"type\": \"array\",\n      \"description\": \"Lista exata de mensagens de texto para o WhatsApp.\",\n      \"items\": {\n        \"type\": \"string\",\n        \"description\": \"Texto da mensagem. Sem emojis soltos.\"\n      },\n      \"minItems\": 1,\n      \"maxItems\": 4\n    },\n    \"acao_sugerida\": {\n      \"type\": \"string\",\n      \"enum\": [\"continuar\", \"fechar_venda\"],\n      \"description\": \"Status da conversa.\"\n    }\n  },\n  \"required\": [\"mensagens\"]\n}",
         "autoFix": true,
         "customizeRetryPrompt": true
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        2592,
-        1152
+        1872,
+        928
       ],
-      "id": "6d63b219-09b9-4efc-a155-f1dbe5d34d7b",
+      "id": "357d1d89-2738-4a86-8f0d-ac03410ad9c8",
       "name": "Structured Output Parser1"
     },
     {
@@ -754,14 +755,14 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        2592,
-        1360
+        1872,
+        1136
       ],
-      "id": "260b962b-6536-46ed-adcc-d5d88e317bc0",
+      "id": "e3e13207-ded3-4628-a506-c070e63dc834",
       "name": "OpenAI Chat Model2",
       "credentials": {
         "openAiApi": {
-          "id": "vBkHHoxqbOBfH5al",
+          "id": "mcydAKDAurhsfaeo",
           "name": "OpenAi account"
         }
       }
@@ -775,11 +776,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -672,
-        1632
+        -1392,
+        1408
       ],
       "typeVersion": 1,
-      "id": "c5491d91-b487-48e4-8daf-747baf284933",
+      "id": "e7fee847-d64e-41c9-a120-b1ea12a2646e",
       "name": "Sticky Note3"
     },
     {
@@ -789,10 +790,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        3040,
-        912
+        2320,
+        688
       ],
-      "id": "5dca389b-0f4d-4724-a830-7750bd8646d6",
+      "id": "99cefbda-c05b-401f-9413-be48075c5c00",
       "name": "Loop Over Items"
     },
     {
@@ -812,10 +813,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3360,
-        1120
+        2640,
+        896
       ],
-      "id": "9c77525a-d528-4209-8d17-bf367766caae",
+      "id": "d4079ecd-9fc3-47e0-afd8-00ecd6e3883b",
       "name": "Edit Fields"
     },
     {
@@ -825,14 +826,14 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "typeVersion": 1.2,
       "position": [
-        2336,
-        1344
+        1616,
+        1120
       ],
-      "id": "3197e8cd-4d69-4f52-8aa7-eedadcc9135e",
+      "id": "97f8756c-39c9-419e-be45-7b73ba1516df",
       "name": "Embeddings OpenAI1",
       "credentials": {
         "openAiApi": {
-          "id": "vBkHHoxqbOBfH5al",
+          "id": "mcydAKDAurhsfaeo",
           "name": "OpenAi account"
         }
       }
@@ -845,18 +846,18 @@
         "textBody": "={{ $json.text.body }}",
         "additionalFields": {}
       },
-      "id": "5278b8e6-6051-4888-93f5-b0beb4aba08c",
+      "id": "ac97e0b2-a911-473d-a9a9-9c27d0007760",
       "name": "Send Response1",
       "type": "n8n-nodes-base.whatsApp",
       "position": [
-        3552,
-        1120
+        2832,
+        896
       ],
       "webhookId": "23834751-5066-48ba-8e19-549680df2b27",
       "typeVersion": 1,
       "credentials": {
         "whatsAppApi": {
-          "id": "6ZIW2mF2dU6Sb33x",
+          "id": "8NsIsTFbtfE2cumZ",
           "name": "WhatsApp account"
         }
       }
@@ -868,10 +869,10 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        3744,
-        1120
+        3024,
+        896
       ],
-      "id": "8388ffb4-d3c4-4fc0-ba0d-787b105fcef3",
+      "id": "6588e17c-2b1e-4cdb-a1ea-8b1ad35ae885",
       "name": "Wait2",
       "webhookId": "9573613e-6cae-4a18-871a-0386bfcaa193"
     },
@@ -889,15 +890,15 @@
       "type": "n8n-nodes-base.whatsAppTrigger",
       "typeVersion": 1,
       "position": [
-        -128,
-        1152
+        -848,
+        928
       ],
-      "id": "fca04823-b583-42cf-ae22-4f6b0c01b28c",
+      "id": "eb317b1b-57b0-4ba4-8ab3-767cad889d55",
       "name": "texto-disable",
       "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
       "credentials": {
         "whatsAppTriggerApi": {
-          "id": "3izD3K0YxvEW0GX4",
+          "id": "Vr6ZDV2hXdxRKXSv",
           "name": "WhatsApp OAuth account"
         }
       },
@@ -917,15 +918,15 @@
       "type": "n8n-nodes-base.whatsAppTrigger",
       "typeVersion": 1,
       "position": [
-        -128,
-        1280
+        -848,
+        1056
       ],
-      "id": "cdda5b6a-4346-4422-9e9b-4d75fdb5f79e",
+      "id": "75fd5e53-1a0e-4103-8787-f6f7a5771452",
       "name": "image-disable",
       "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
       "credentials": {
         "whatsAppTriggerApi": {
-          "id": "3izD3K0YxvEW0GX4",
+          "id": "Vr6ZDV2hXdxRKXSv",
           "name": "WhatsApp OAuth account"
         }
       },
@@ -945,15 +946,15 @@
       "type": "n8n-nodes-base.whatsAppTrigger",
       "typeVersion": 1,
       "position": [
-        -128,
-        1424
+        -848,
+        1200
       ],
-      "id": "8a6fb198-6bc5-4ada-9ec4-ed5ea170142a",
+      "id": "72c9e967-fd97-4066-8006-33fac7f860ab",
       "name": "pdf-disable",
       "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
       "credentials": {
         "whatsAppTriggerApi": {
-          "id": "3izD3K0YxvEW0GX4",
+          "id": "Vr6ZDV2hXdxRKXSv",
           "name": "WhatsApp OAuth account"
         }
       },
@@ -973,15 +974,15 @@
       "type": "n8n-nodes-base.whatsAppTrigger",
       "typeVersion": 1,
       "position": [
-        -128,
-        848
+        -848,
+        624
       ],
-      "id": "0cb93bab-5d6a-4921-8978-e69ad953684d",
+      "id": "efb2e6f1-9eaa-4fdd-94a7-b88b6a05b58a",
       "name": "audio-disable",
       "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
       "credentials": {
         "whatsAppTriggerApi": {
-          "id": "3izD3K0YxvEW0GX4",
+          "id": "Vr6ZDV2hXdxRKXSv",
           "name": "WhatsApp OAuth account"
         }
       },
@@ -1001,15 +1002,15 @@
       "type": "n8n-nodes-base.whatsAppTrigger",
       "typeVersion": 1,
       "position": [
-        -128,
-        1008
+        -848,
+        784
       ],
-      "id": "95a6ed71-74e8-47c1-a8f4-f1fafd11a34b",
+      "id": "c9ada2ef-ec45-4de7-89e3-17fe51c12e43",
       "name": "WhatsApp Trigger",
       "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
       "credentials": {
         "whatsAppTriggerApi": {
-          "id": "3izD3K0YxvEW0GX4",
+          "id": "Vr6ZDV2hXdxRKXSv",
           "name": "WhatsApp OAuth account"
         }
       }
@@ -1025,15 +1026,15 @@
       "type": "n8n-nodes-base.whatsApp",
       "typeVersion": 1.1,
       "position": [
-        3072,
-        1888
+        2352,
+        1664
       ],
-      "id": "e5f84943-e9e1-487a-b50c-99f9bf8bc99a",
+      "id": "c5bb4fa5-5656-473a-a9ae-378a24e665cf",
       "name": "Send message",
       "webhookId": "a2500a08-b652-4d29-91c8-fed3605fb7a1",
       "credentials": {
         "whatsAppApi": {
-          "id": "6ZIW2mF2dU6Sb33x",
+          "id": "8NsIsTFbtfE2cumZ",
           "name": "WhatsApp account"
         }
       },
@@ -1048,14 +1049,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2848,
-        1888
+        2128,
+        1664
       ],
-      "id": "328314ad-ddb1-4d4f-aa67-532a5ad9aeeb",
+      "id": "7279ddf7-2737-4a79-94e2-edae8407f018",
       "name": "SELECIONAR NUMERO USUARIO INAT.",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       },
@@ -1154,14 +1155,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3264,
-        1888
+        2544,
+        1664
       ],
-      "id": "d33021e8-7e69-4d11-a32c-9a3b120e1541",
+      "id": "0e9acda4-cff2-49fc-8d89-d5569c3b6fb0",
       "name": "Update rows in a table",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       },
@@ -1172,19 +1173,19 @@
         "sessionIdType": "customKey",
         "sessionKey": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
         "tableName": "ai_chat_memory",
-        "contextWindowLength": 10
+        "contextWindowLength": 30
       },
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "typeVersion": 1.3,
       "position": [
-        2224,
-        1120
+        1504,
+        896
       ],
-      "id": "c0d76a62-e1bd-4339-8fda-adf08c8d5322",
+      "id": "90177f64-f963-41ca-81fc-372454e84a8b",
       "name": "Postgres Chat Memory",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       }
@@ -1218,14 +1219,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4768,
-        1072
+        4048,
+        848
       ],
-      "id": "f6470226-762e-4fcf-987a-6bb2026c8349",
+      "id": "4b1a8161-63e8-4296-bbbd-d2bb22d5329d",
       "name": "Deleta horários das mensagens do usuário/bot",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       }
@@ -1259,14 +1260,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4976,
-        1072
+        4256,
+        848
       ],
-      "id": "ce37617a-4a88-43dd-ba83-fe741db11e6d",
+      "id": "770e9517-d9dd-4a3d-b00e-76db3db20690",
       "name": "Deleta a memória do bot",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       }
@@ -1280,14 +1281,14 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
       "typeVersion": 1.3,
       "position": [
-        2336,
-        1152
+        1616,
+        928
       ],
-      "id": "b1fa585d-cb13-443b-9693-167e54e53e9b",
+      "id": "f79d534b-7615-464f-a99f-d364cbaba1e7",
       "name": "Postgres PGVector Store",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       }
@@ -1300,14 +1301,14 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
       "typeVersion": 1.3,
       "position": [
-        576,
-        1728
+        -144,
+        1504
       ],
-      "id": "959b1a8c-442d-450c-81cd-659f000a899f",
+      "id": "56e07bb8-23b1-4811-bcce-4f97b992e1f6",
       "name": "Postgres PGVector Store1",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       }
@@ -1321,14 +1322,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2848,
-        1632
+        2128,
+        1408
       ],
-      "id": "01f98aef-18d9-4a59-8d75-0dc0163a9ecb",
+      "id": "48c14d4a-9e0c-4345-8c72-e497f55fff66",
       "name": "Apagar linhas com mais de 7 dias",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       },
@@ -1347,10 +1348,10 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        2576,
-        1888
+        1856,
+        1664
       ],
-      "id": "37c8a86c-4d84-4434-ac08-dd0f85576e4d",
+      "id": "41c2a740-c044-4fca-bfac-92e7ed9a3a08",
       "name": "Rodar a cada 5min",
       "disabled": true
     },
@@ -1374,12 +1375,12 @@
         },
         "options": {}
       },
-      "id": "2bc2e3fe-cb1b-41ef-b955-e8cf1681383e",
+      "id": "4d72c6b3-1788-4853-bba7-be5b56cbe8a2",
       "name": "edit text",
       "type": "n8n-nodes-base.set",
       "position": [
-        1216,
-        720
+        496,
+        496
       ],
       "typeVersion": 3.4
     },
@@ -1403,12 +1404,12 @@
         },
         "options": {}
       },
-      "id": "43951d97-16f1-42d8-aa28-abe333f7f7cf",
+      "id": "fe635ab7-fa4c-4153-9d2c-53901dba5e2e",
       "name": "edit audio",
       "type": "n8n-nodes-base.set",
       "position": [
-        1424,
-        976
+        704,
+        752
       ],
       "typeVersion": 3.4
     },
@@ -1426,12 +1427,12 @@
         },
         "options": {}
       },
-      "id": "49def5e2-bd22-4ea8-881d-f1415ffa4043",
+      "id": "ed531af2-4b86-4375-9aeb-1d89338f90fa",
       "name": "edit image",
       "type": "n8n-nodes-base.set",
       "position": [
-        1264,
-        1152
+        544,
+        928
       ],
       "typeVersion": 3.4
     },
@@ -1449,12 +1450,12 @@
         },
         "options": {}
       },
-      "id": "c7106430-778b-4143-861c-ee4e92d912a9",
+      "id": "0475097f-50ca-4c9d-b4cc-b4e9f3fcdf8c",
       "name": "edit document",
       "type": "n8n-nodes-base.set",
       "position": [
-        1648,
-        1216
+        928,
+        992
       ],
       "typeVersion": 3.4
     },
@@ -1471,10 +1472,10 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        2576,
-        1632
+        1856,
+        1408
       ],
-      "id": "d680de39-e7fb-425d-9336-8c7d55cb6693",
+      "id": "d8d54b23-dc3f-41f3-b9a7-46de9c18189e",
       "name": "Rodar todo dia às 4am",
       "disabled": true
     },
@@ -1487,14 +1488,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        96,
-        352
+        -624,
+        128
       ],
-      "id": "0163a0ae-9293-4ff8-9d77-5b7ada0e341b",
+      "id": "90829360-191a-4caf-95bb-7f5d1d666ce9",
       "name": "CRIAR AS 2 TABELAS",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       },
@@ -1580,14 +1581,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2032,
-        912
+        1312,
+        688
       ],
-      "id": "114a55b6-cc36-4362-8010-94b9e2c54ff5",
+      "id": "ec6eb87d-db37-467a-90b6-34a6102c97ad",
       "name": "Insert rows in a table",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       }
@@ -1601,14 +1602,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        304,
-        64
+        -416,
+        -160
       ],
-      "id": "c21eeab3-80b7-4104-ad31-08ae512e8882",
+      "id": "276f31ed-c20b-4baf-8e09-10505c3408c8",
       "name": "deletar dados da tabela1",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       },
@@ -1694,14 +1695,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4768,
-        880
+        4048,
+        656
       ],
-      "id": "436ae260-936c-40f6-b4ba-7fc84a2ecfb4",
+      "id": "8600f42c-f5c3-484c-907b-ce36e0688e75",
       "name": "Insert rows in a table1",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       }
@@ -1715,14 +1716,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        288,
-        352
+        -432,
+        128
       ],
-      "id": "8ffd1df4-e684-4fa9-bb03-03382c344c7b",
+      "id": "da7b6dd7-708c-4b99-b971-5f31dd5bd887",
       "name": "Rodar uma vez por banco de dados",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       },
@@ -1737,14 +1738,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -304,
-        1728
+        -1024,
+        1504
       ],
-      "id": "d9d77096-825d-495b-a3ea-363a88797436",
+      "id": "579d9880-4465-4e47-afd8-c2c0f92f29c0",
       "name": "deletar dados da tabela2",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       }
@@ -1758,14 +1759,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -80,
-        1728
+        -800,
+        1504
       ],
-      "id": "16cfba6d-a16e-4dc1-bc53-2d6a1d4ab79b",
+      "id": "e992e646-bc48-4c11-821b-ae7ef970681c",
       "name": "deletar dados da tabela3",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       }
@@ -1779,14 +1780,14 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        144,
-        1728
+        -576,
+        1504
       ],
-      "id": "1129539f-82f5-4b68-a79a-f0da75e42929",
+      "id": "2341d2e8-2bbb-4d92-b271-068e6d538158",
       "name": "Deletar documentos RAG",
       "credentials": {
         "postgres": {
-          "id": "xuRQB5TEFKG7llQu",
+          "id": "eFUWrbhHc04hWN2o",
           "name": "Postgres account"
         }
       }
@@ -1936,18 +1937,18 @@
           "contacts": [
             {
               "profile": {
-                "name": "Daniel Alvarez"
+                "name": "Patrick"
               },
-              "wa_id": "5521969547552"
+              "wa_id": "5521984870401"
             }
           ],
           "messages": [
             {
-              "from": "5521969547552",
-              "id": "wamid.HBgNNTUyMTk2OTU0NzU1MhUCABIYFjNFQjBGN0FFRDZGMkQwOEMzMDY4RkYA",
-              "timestamp": "1764423313",
+              "from": "5521984870401",
+              "id": "wamid.HBgNNTUyMTk4NDg3MDQwMRUCABIYIEFDOTJENjdGOEYwQkFBQTYwOTBEMjYyNjgyRUI3RjdBAA==",
+              "timestamp": "1763742928",
               "text": {
-                "body": "esses planos i estão caros q vc mostrou"
+                "body": "sim"
               },
               "type": "text"
             }
@@ -2580,11 +2581,11 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "d88b4523-d1b3-4408-a054-2d5bf6fbac0f",
+  "versionId": "1d3f3579-212d-4e98-9f64-070a0bbc0d8a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "c4a8578c63c32def82afaf167073afbb2ff5663c9fb26d8303c645b81983a736"
   },
-  "id": "bOMdDqNXNNkh0w1u",
+  "id": "9aQ3sZl3hipb3lNE",
   "tags": []
 }
