@@ -57,10 +57,10 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "={{ $('edit text').item.json.text || $('edit audio').item.json.text || $('edit image').item.json.text || $('edit document').item.json.text }}",
+        "text": "={{\n  [\n    \"edit text\", \n    \"edit audio\", \n    \"edit image\", \n    \"edit document\"\n  ].map(nodeName => {\n    try {\n      return $(nodeName).item.json.text;\n    } catch (e) {\n      return \"\";\n    }\n  }).join(\"\") \n}}",
         "hasOutputParser": true,
         "options": {
-          "systemMessage": "=Você é Layon, consultor sênior da UP Designer.\nSua missão: Guiar o cliente desde a dúvida até o fechamento do contrato, usando o Método de Venda Consultiva.\nTom de voz: Especialista, Empático, Seguro e Energético (Use emojis moderados: 🚀, ✅, 🤝).\n\n🚨 REGRAS DE OURO (RAG & SCRIPT):\n1. O 'Postgres PGVector Store' é para PREÇOS e LINKS.\n2. SCRIPT FIXO > RAG: Se o prompt manda dizer uma frase específica, DIGA ELA. Não busque alternativas.\n3. EFICIÊNCIA: Ao buscar, use o primeiro resultado. Não refine.\n\n🎯 FLUXO DE VENDAS (Siga a sequência lógica):\n\nETAPA 1: COLETA INICIAL (Diagnóstico)\n- Se for início: \"Opa! Que demais ter você aqui. Sou o Layon da UP Designer! 🚀 Pra eu te ajudar do jeito certo, me conta: Você já tem um logotipo ou está começando do zero?\"\n\nETAPA 2: ANÁLISE CRÍTICA (Validação)\n- VERIFIQUE O HISTÓRICO: O cliente já falou do negócio? Se SIM, pule para a ETAPA 3.\n- Se não tem logo: \"Perfeito! Começar do zero é a melhor forma de fazer certo. Me conta um pouco mais sobre o seu negócio e o público que você quer atingir.\"\n- Se tem logo: Peça para ver e critique construtivamente.\n\nETAPA 3: A METODOLOGIA (SCRIPT OBRIGATÓRIO + CTA)\n- O cliente explicou o negócio? Valide (ex: \"Entendi, para flores precisa ser delicado...\").\n- Em seguida, diga: \"Posso te explicar rapidinho como a nossa metodologia garante a sua segurança e o resultado perfeito?\"\n\nETAPA 4: OFERTA E PREÇO (AGORA USE O RAG)\n- Se o cliente disser \"Pode mostrar\" ou \"Quero ver os planos\":\n  1. BUSQUE NO RAG POR: \"Resumo Planos Bronze Prata Ouro\".\n  2. Apresente os 3 planos de forma resumida e persuasiva (Não jogue apenas texto seco).\n  3. Termine perguntando: \"Qual desses combina mais com o momento atual da [Nome da Empresa/Negócio]?\"\n\nETAPA 5: FECHAMENTO\n- Cliente escolheu? Pergunte: \"Posso gerar o link seguro para iniciarmos agora?\"\n- Se \"Sim\": Busque no RAG por \"Link Pagamento [Nome do Plano]\" e envie.\n\n🛡️ REGRAS TÉCNICAS (JSON PURO):\n- Responda APENAS com o JSON. Sem markdown, sem chave \"output\".\n- Se precisar mandar múltiplas mensagens seguidas (ex: Intro + Planos + Pergunta), use o array com até 3 ou 4 mensagens para facilitar a leitura:\n{\n    \"mensagens\": [\n       \"Aqui estão os planos...\", \n       \"Detalhes do Bronze, Prata e Ouro...\", \n       \"Qual desses faz mais sentido para você?\"\n    ],\n    \"acao_sugerida\": \"continuar\"\n  }",
+          "systemMessage": "=Você é Layon, consultor sênior da UP Designer.\nSua missão: Guiar o cliente desde a dúvida até o fechamento do contrato, seguindo RIGOROSAMENTE as etapas abaixo.\nTom de voz: Especialista, Empático, Seguro e Energético (Use emojis moderados: 🚀, ✅, 🤝).\n\n🚨 REGRAS DE OURO (RAG & SCRIPT):\n1. O 'Postgres PGVector Store' é SUA FONTE para PREÇOS e LINKS.\n2. SCRIPT FIXO: Nas etapas de Metodologia, use as frases exatas definidas abaixo.\n3. INSTRUÇÃO TÉCNICA: Responda APENAS com o JSON. Sem markdown, sem texto antes ou depois.\n\n🎯 FLUXO DE VENDAS OBRIGATÓRIO (Siga a sequência):\n\nETAPA 1: TRIAGEM E DIAGNÓSTICO\n- Se for o início: \"Opa! Que demais ter você aqui. Sou o Layon da UP Designer! 🚀 Pra eu te ajudar do jeito certo, me conta: Você já tem um logotipo ou está começando do zero?\"\n\nETAPA 2: ANÁLISE E ESPERANÇA (Regras 2 e 3)\n- Se o cliente JÁ TEM logo:\n  1. Peça para ver (se ainda não enviou).\n  2. Faça uma crítica construtiva técnica.\n  3. Aponte a melhoria necessária (DÊ ESPERANÇA). Ex: \"Dá para modernizar isso e passar muito mais autoridade...\"\n  4. Em seguida, pergunte sobre a \"base\" do que ele busca/imagina para alinhar a expectativa.\n- Se NÃO TEM logo: Valide a decisão de começar certo e pergunte sobre o negócio/público.\n\nETAPA 3: PERMISSÃO E METODOLOGIA (Regras 4 e 4.1)\n- Antes de falar preço, peça permissão: \"Posso te explicar rapidinho como nossa metodologia garante sua segurança e o resultado perfeito?\"\n- Se o cliente disser \"Sim/Pode\", ENVIE O SCRIPT EXATO:\n  \"A gente trabalha com modelo de contrato, assegurando juridicamente os nossos clientes. ✅\n   Todas as nossas formas de pagamento são feitas apenas pelo Mercado Pago, dando 100% de segurança de que o projeto será entregue. 🛡️\n   Além disso, trabalhamos com a modalidade de edições ilimitadas para ir de encontro com a sua ideia e te surpreender. 🚀\"\n\nETAPA 4: DÚVIDAS E OBJEÇÕES (Regra 5)\n- Logo após enviar a metodologia, pergunte: \"Ficou alguma dúvida sobre como funcionamos ou podemos seguir para os planos?\"\n\nETAPA 5: OFERTA E PREÇO (Regras 6 e 6.1 - USE O RAG)\n- Se o cliente pedir os planos/preços:\n  1. BUSQUE NO RAG POR: \"Resumo Planos Bronze Prata Ouro\".\n  2. Apresente os planos com valores e itens inclusos.\n  3. Termine perguntando: \"Qual desses combina mais com o momento atual da sua empresa?\"\n\nETAPA 6: FECHAMENTO (Regra 7)\n- Cliente escolheu o plano? Pergunte: \"Posso gerar o link seguro para iniciarmos agora?\"\n- Se \"Sim\": Busque no RAG por \"Link Pagamento [Nome do Plano]\" e envie.\n- Finalize com energia.\n\n🛡️ FORMATO DE RESPOSTA (JSON PURO):\n{\n    \"mensagens\": [\n       \"Mensagem 1 (Ex: A crítica construtiva...)\", \n       \"Mensagem 2 (Ex: A pergunta de gancho...)\"\n    ],\n    \"acao_sugerida\": \"continuar\" ou \"fechar_venda\"\n}",
           "maxIterations": 3
         }
       },
@@ -689,7 +689,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Pega a saída do Agente (que agora é {\"mensagens\": [\"msg1\", \"msg2\"]})\nconst output = $json.output || $json;\nconst result = [];\n\nif (output && Array.isArray(output.mensagens)) {\n  const mensagens = output.mensagens;\n\n  for (let i = 0; i < mensagens.length; i++) {\n    const msg = mensagens[i];\n    if (typeof msg === \"string\" && msg.trim() !== \"\") {\n      // Cria um item de saída para cada mensagem na lista\n      result.push({\n        json: {\n          type: \"text\",\n          text: {\n            body: msg.trim(),\n          },\n          order: i + 1,\n        },\n      });\n    }\n  }\n}\n\n// Se der erro ou a IA não retornar nada, envia uma msg padrão\nif (result.length === 0) {\n  return [\n    {\n      json: {\n        type: \"text\",\n        text: {\n          body: \"Não entendi, pode repetir?\",\n        },\n        order: 1,\n      },\n    },\n  ];\n}\n\nreturn result;"
+        "jsCode": "// Pega a saída do Agente\nconst output = $json.output || $json;\nconst result = [];\n\nif (output && Array.isArray(output.mensagens)) {\n  const mensagens = output.mensagens;\n\n  for (let i = 0; i < mensagens.length; i++) {\n    const msg = mensagens[i];\n    if (typeof msg === \"string\" && msg.trim() !== \"\") {\n      \n      // --- CORREÇÃO AQUI ---\n      // Substitui todas as ocorrências literais de \"\\n\" por uma quebra de linha real\n      let messageBody = msg.trim().replace(/\\\\n/g, '\\n'); \n      // ---------------------\n\n      result.push({\n        json: {\n          type: \"text\",\n          text: {\n            body: messageBody,\n          },\n          order: i + 1,\n        },\n      });\n    }\n  }\n}\n\n// Fallback se não houver mensagens\nif (result.length === 0) {\n  return [\n    {\n      json: {\n        type: \"text\",\n        text: {\n          body: \"Não entendi, pode repetir?\",\n        },\n        order: 1,\n      },\n    },\n  ];\n}\n\nreturn result;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1003,7 +1003,7 @@
       "typeVersion": 1,
       "position": [
         -848,
-        784
+        768
       ],
       "id": "c9ada2ef-ec45-4de7-89e3-17fe51c12e43",
       "name": "WhatsApp Trigger",
@@ -1421,7 +1421,7 @@
               "id": "48af2dcc-4ce9-45fc-abfc-54f803930092",
               "name": "text",
               "type": "string",
-              "value": "=User image description: {{ $json.content }}\n\nUser image caption: {{ $('Route Types').item.json.messages[0].image.caption }}"
+              "value": "=User image description: {{ $json.content }}\n\nUser image caption: {{ $('WhatsApp Trigger').item.json.messages[0].image.caption || \"Sem legenda fornecida\" }}"
             }
           ]
         },
@@ -1791,6 +1791,33 @@
           "name": "Postgres account"
         }
       }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {
+          "messageStatusUpdates": [
+            "all"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1072,
+        752
+      ],
+      "id": "3883f859-202e-4f77-8f05-f1c0e8c7eb03",
+      "name": "WhatsApp Trigger1",
+      "webhookId": "b6d5af8e-c681-485c-a908-66e00a629386",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "Vr6ZDV2hXdxRKXSv",
+          "name": "WhatsApp OAuth account"
+        }
+      }
     }
   ],
   "pinData": {
@@ -1926,6 +1953,40 @@
         }
       }
     ],
+    "WhatsApp Trigger1": [
+      {
+        "json": {
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "15551791204",
+            "phone_number_id": "740050119202275"
+          },
+          "contacts": [
+            {
+              "profile": {
+                "name": "Patrick"
+              },
+              "wa_id": "5521984870401"
+            }
+          ],
+          "messages": [
+            {
+              "from": "5521984870401",
+              "id": "wamid.HBgNNTUyMTk4NDg3MDQwMRUCABIYIEFDRTBCRjFBNTI3NEUyNDczMDg4OEMwOTkyRjMwQTc5AA==",
+              "timestamp": "1764939521",
+              "type": "image",
+              "image": {
+                "mime_type": "image/jpeg",
+                "sha256": "/JvrdZoxsH/TN3tuy/KjDIDVpc/YQwz7e9w98bVl2QQ=",
+                "id": "4463425230637917",
+                "url": "https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=4463425230637917&source=webhook&ext=1764939822&hash=ARly_i_nP9oWhRX22IUyWGOLXUpbxat-eYS6ccam24MNFg"
+              }
+            }
+          ],
+          "field": "messages"
+        }
+      }
+    ],
     "WhatsApp Trigger": [
       {
         "json": {
@@ -1945,10 +2006,10 @@
           "messages": [
             {
               "from": "5521984870401",
-              "id": "wamid.HBgNNTUyMTk4NDg3MDQwMRUCABIYIEFDOTJENjdGOEYwQkFBQTYwOTBEMjYyNjgyRUI3RjdBAA==",
-              "timestamp": "1763742928",
+              "id": "wamid.HBgNNTUyMTk4NDg3MDQwMRUCABIYFDNGREFEQTRCMTQ2M0Q2Q0E4NkM0AA==",
+              "timestamp": "1764941723",
               "text": {
-                "body": "sim"
+                "body": "quero que tenha algo mais a ver com marketing digital"
               },
               "type": "text"
             }
@@ -2575,13 +2636,18 @@
           }
         ]
       ]
+    },
+    "WhatsApp Trigger1": {
+      "main": [
+        []
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "1d3f3579-212d-4e98-9f64-070a0bbc0d8a",
+  "versionId": "32637af7-6e30-4b6e-99bd-9a6242bd284e",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "c4a8578c63c32def82afaf167073afbb2ff5663c9fb26d8303c645b81983a736"
