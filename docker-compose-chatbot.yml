@@ -1,0 +1,58 @@
+version: '3.8'
+
+volumes:
+  chatbot_db_storage:
+  chatbot_n8n_storage:
+
+networks:
+  n8n_network:
+    external: true
+
+services:
+  chatbot-n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: chatbot-n8n
+    restart: always
+    environment:
+      - N8N_HOST=${DOMAIN_NAME}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - NODE_ENV=production
+      - WEBHOOK_URL=https://${DOMAIN_NAME}/
+      - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
+      - TZ=${GENERIC_TIMEZONE}
+
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=chatbot-postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${POSTGRES_DB}
+      - DB_POSTGRESDB_USER=${POSTGRES_USER}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.chatbot-n8n.rule=Host(`${DOMAIN_NAME}`)"
+      - "traefik.http.routers.chatbot-n8n.entrypoints=websecure"
+      - "traefik.http.routers.chatbot-n8n.tls.certresolver=myresolver"
+      - "traefik.http.services.chatbot-n8n.loadbalancer.server.port=5678"
+    volumes:
+      - chatbot_n8n_storage:/home/node/.n8n
+    networks:
+      - n8n_network
+    depends_on:
+      - chatbot-postgres
+
+  chatbot-postgres:
+    image: postgres:16
+    container_name: chatbot-postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - chatbot_db_storage:/var/lib/postgresql/data
+    networks:
+      - n8n_network
+
