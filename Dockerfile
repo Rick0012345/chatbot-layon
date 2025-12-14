@@ -1,9 +1,9 @@
 FROM n8nio/n8n:latest
 
-# Copia workflows para importação automática
-COPY ["CHATBOT BASICO LAYON.json", "/opt/workflows/CHATBOT_BASICO_LAYON.json"]
-COPY ["SUPER IMPORTANTE WORKFLOW PRECIOSO.json", "/opt/workflows/SUPER_IMPORTANTE_WORKFLOW_PRECIOSO.json"]
-COPY ["chatbot-finalizado.json", "/opt/workflows/chatbot-finalizado.json"]
+# Copia workflows reais do repositório para importação automática
+COPY ["chatbot postgres 6.0.json", "/opt/workflows/chatbot_postgres_6_0.json"]
+COPY ["CRIAR TABELAS.json", "/opt/workflows/CRIAR_TABELAS.json"]
+COPY ["inatividade-trigger.json", "/opt/workflows/inatividade_trigger.json"]
 
 # Copia script de entrypoint que importa workflows e inicia o n8n
 COPY docker-entrypoint.sh /docker-entrypoint-custom.sh
