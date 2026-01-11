@@ -1,0 +1,114 @@
+version: "3.8"
+
+services:
+  postgres:
+    # IMAGEM OBRIGATÓRIA: Já vem com a extensão 'vector' instalada
+    image: pgvector/pgvector:pg16
+    container_name: chatbot-layon-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: n8n
+      POSTGRES_USER: n8n
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      TZ: America/Sao_Paulo
+    volumes:
+      - chatbot_layon_postgres_data:/var/lib/postgresql/data
+    networks:
+      - lanchonete-network
+    # Otimização de memória para leitura rápida de vetores
+    command: postgres -c shared_buffers=2GB -c effective_cache_size=6GB -c maintenance_work_mem=512MB
+
+  redis:
+    # Redis leve apenas para fila (Queue)
+    image: redis:7-alpine
+    container_name: chatbot-layon-redis
+    restart: always
+    volumes:
+      - chatbot_layon_redis_data:/data
+    networks:
+      - lanchonete-network
+
+  n8n-editor:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: chatbot-layon-n8n-editor
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=${DOMAIN_NAME}
+      - WEBHOOK_URL=https://${DOMAIN_NAME}/
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+      - TZ=America/Sao_Paulo
+      
+      # Conexão Banco de Dados
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=${DB_PASSWORD}
+
+      # Configuração Queue Mode
+      - EXECUTIONS_MODE=queue
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      
+      # Otimizações de Performance e Segurança
+      - N8N_RUNNERS_ENABLED=true
+      - OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS=true
+      
+      # Limpeza de Logs (Pruning) - ECONOMIA DE DISCO
+      - EXECUTIONS_DATA_SAVE_ON_ERROR=all
+      - EXECUTIONS_DATA_SAVE_ON_SUCCESS=none
+      - EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS=true
+      - EXECUTIONS_DATA_PRUNE=true
+      - EXECUTIONS_DATA_MAX_AGE=168 # 7 Dias
+      
+      - N8N_ENCRYPTION_KEY=${N8N_KEY}
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - lanchonete-network
+    depends_on:
+      - postgres
+      - redis
+
+  n8n-worker:
+    image: docker.n8n.io/n8nio/n8n:latest
+    restart: always
+    # Limite de 5 tarefas simultâneas por worker para não travar a CPU
+    command: worker --concurrency=5
+    deploy:
+      mode: replicated
+      replicas: 2 # 2 Workers rodando em paralelo
+    environment:
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+      - TZ=America/Sao_Paulo
+      # Mesmas variáveis de Banco e Redis do Editor
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=${DB_PASSWORD}
+      - EXECUTIONS_MODE=queue
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_ENCRYPTION_KEY=${N8N_KEY}
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - lanchonete-network
+    depends_on:
+      - postgres
+      - redis
+
+volumes:
+  n8n_data:
+  chatbot_layon_postgres_data:
+  chatbot_layon_redis_data:
+
+networks:
+  lanchonete-network:
+    driver: bridge
