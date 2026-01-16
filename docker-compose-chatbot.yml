@@ -15,9 +15,11 @@ services:
       - N8N_PROTOCOL=https
       - NODE_ENV=production
       - WEBHOOK_URL=https://${DOMAIN_NAME}/
-      - N8N_SECURE_COOKIE=false
+      - N8N_SECURE_COOKIE=true
       - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
       - TZ=${GENERIC_TIMEZONE}
+      - N8N_TRUST_PROXY=true
+      - N8N_PROXY_HOPS=1
 
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_HOST=chatbot-postgres
