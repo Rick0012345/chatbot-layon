@@ -3,8 +3,27 @@ version: '3.8'
 volumes:
   chatbot_db_storage:
   chatbot_n8n_storage:
+  chatbot_traefik_storage:
 
 services:
+  chatbot-traefik:
+    image: "traefik"
+    container_name: chatbot-traefik
+    restart: always
+    command:
+      - "--api=true"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - "5679:80"
+      - "8443:443"
+    volumes:
+      - "chatbot_traefik_storage:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
   chatbot-n8n:
     build:
       context: .
@@ -30,6 +49,11 @@ services:
       - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
 
       - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.chatbot-n8n.rule=Host(`${DOMAIN_NAME}`)"
+      - "traefik.http.routers.chatbot-n8n.entrypoints=websecure"
+      - "traefik.http.routers.chatbot-n8n.tls=true"
     ports:
       - "5681:5681"
     volumes:
@@ -38,7 +62,7 @@ services:
       - chatbot-postgres
 
   chatbot-postgres:
-    image: postgres:16
+    image: pgvector/pgvector:pg16
     container_name: chatbot-postgres
     restart: always
     environment:
