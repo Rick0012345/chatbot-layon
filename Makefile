@@ -8,7 +8,7 @@ CHATBOT_COMPOSE := docker-compose-chatbot.yml
 CHATBOT_ENV := .env.chatbot
 .PHONY: deploy-chatbot verify-chatbot prep-chatbot push-chatbot up-chatbot
 
-# Deploy único do chatbot (usa Dockerfile + compose)
+# Deploy único do chatbot (usa apenas docker-compose)
 deploy-chatbot: verify-chatbot prep-chatbot push-chatbot up-chatbot
 
 verify-chatbot:
@@ -17,10 +17,10 @@ verify-chatbot:
 	[ -f $(CHATBOT_ENV) ] || { echo "Faltando $(CHATBOT_ENV)"; exit 1; }
 
 prep-chatbot:
-	@ssh $(USER)@$(IP) "mkdir -p $(CHATBOT_REMOTE); if command -v ufw >/dev/null 2>&1; then ufw allow 5681/tcp; fi"
+	@ssh $(USER)@$(IP) "mkdir -p $(CHATBOT_REMOTE)"
 
 push-chatbot:
-	@scp $(CHATBOT_COMPOSE) $(CHATBOT_ENV) Dockerfile docker-entrypoint.sh "chatbot postgres 6.0.json" "CRIAR TABELAS.json" "inatividade-trigger.json" $(USER)@$(IP):$(CHATBOT_REMOTE)/
+	@scp $(CHATBOT_COMPOSE) $(CHATBOT_ENV) "chatbot postgres 6.0.json" "CRIAR TABELAS.json" "inatividade-trigger.json" $(USER)@$(IP):$(CHATBOT_REMOTE)/
 
 up-chatbot:
 	@ssh $(USER)@$(IP) "cd $(CHATBOT_REMOTE) \
@@ -28,5 +28,4 @@ up-chatbot:
 	&& mv $(CHATBOT_COMPOSE) docker-compose.yml \
 	&& (docker compose down --remove-orphans || true) \
 	&& (docker rm -f chatbot-traefik chatbot-worker chatbot-redis chatbot-caddy caddy traefik 2>/dev/null || true) \
-	&& docker compose build \
 	&& docker compose up -d --force-recreate --remove-orphans"
